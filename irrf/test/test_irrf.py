@@ -1,3 +1,4 @@
+from collections import namedtuple
 import unittest
 from parameterized import parameterized
 
@@ -6,29 +7,22 @@ from irrf import IRRF
 
 class IRRFTestCase(unittest.TestCase):
 
+    Income = namedtuple('Income', ['value', 'description'])
+
     def setUp(self):
         self.irrf = IRRF()
 
-    def test_register_income_1(self):
+    @parameterized.expand([
+        ( Income(value=1000, description='Weekly salary'), ),
+        ( Income(value=300, description='Interest on equity'), ),
+        ( Income(value=1500, description='Rent income'),  ),
+    ])
+    def test_register_income_1(self, income: Income, *args, **kwargs):
         self.irrf.register_income(
-            value=1000,
-            description='Weekly salary',
+            value=income.value,
+            description=income.description,
         )
-        self.assertEqual(self.irrf.total_income, 1000)
-
-    def test_register_income_2(self):
-        self.irrf.register_income(
-            value=300,
-            description='Interest on equity',
-        )
-        self.assertEqual(self.irrf.total_income, 300)
-
-    def test_register_income_3(self):
-        self.irrf.register_income(
-            value=1500,
-            description='Rent income',
-        )
-        self.assertEqual(self.irrf.total_income, 1500)
+        self.assertEqual(self.irrf.total_income, income.value)
 
     def test_register_income_with_multiple_incomes(self):
         self.irrf.register_income(
