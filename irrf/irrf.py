@@ -44,4 +44,17 @@ class IRRF:
         raise RuntimeError("It is not allowed to change the list of declared income")
 
     def calculate_tax(self) -> float:
-        return 0.0
+        if self.total_income < 1903.99:
+            return 0
+
+        elif 1903.99 <= self.total_income < 2826.66:
+            return self.total_income * (7.5 / 100) - 142.80
+
+        elif 2826.66 <= self.total_income < 3751.06:
+            return self.total_income * (15 / 100) - 354.80
+
+        elif 3751.06 <= self.total_income < 4664.69:
+            return self.total_income * (22.5 / 100) - 636.13
+
+        else:
+            return self.total_income * (27.5 / 100) - 869.36
