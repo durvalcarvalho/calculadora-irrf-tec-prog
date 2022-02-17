@@ -29,3 +29,18 @@ class IRRFTestCase(unittest.TestCase):
             description='Rent income',
         )
         self.assertEqual(self.irrf.total_income, 1500)
+
+    def test_register_income_with_multiple_incomes(self):
+        self.irrf.register_income(
+            value=1000,
+            description='Weekly salary',
+        )
+        self.irrf.register_income(
+            value=300,
+            description='Interest on equity',
+        )
+        self.irrf.register_income(
+            value=1500,
+            description='Rent income',
+        )
+        self.assertEqual(self.irrf.total_income, 2800)
