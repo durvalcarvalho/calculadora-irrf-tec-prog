@@ -1,13 +1,16 @@
+import numbers
 from exceptions import InvalidIncomeValueError
+
 
 class Income:
     def __init__(self, value: int, description: str):
-        if value < 0:
+        if not isinstance(value, numbers.Number) or value <= 0:
             raise InvalidIncomeValueError(
                 f'The income value must be a positive number, got {value}'
             )
         self.value = value
         self.description = description
+
 
 class IRRF:
 
