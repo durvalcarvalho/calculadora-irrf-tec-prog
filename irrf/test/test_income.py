@@ -26,3 +26,14 @@ class IncomeTestCase(unittest.TestCase):
     def tests_if_the_constructor_refuses_negative_values(self, value, description):
         with self.assertRaises(InvalidIncomeValueError):
             Income(value, description)
+
+    @parameterized.expand([
+        ('-2500', 'Salary'),
+        ('Rent', 'Rent'),
+        ([1,2,3], 'Nubank Interest'),
+        ({1:10, 2:20}, 'Nubank Interest'),
+        ({1:10, 2:20}, 'Nubank Interest'),
+    ])
+    def test_if_constructor_refuses_non_numeric_values(self, value, description):
+        with self.assertRaises(InvalidIncomeValueError):
+            Income(value, description)
