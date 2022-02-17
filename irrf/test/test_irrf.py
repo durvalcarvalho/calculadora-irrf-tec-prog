@@ -50,13 +50,18 @@ class IRRFTestCase(unittest.TestCase):
 
         self.assertEqual(self.irrf.total_income, total_income)
 
-    def test_get_all_income_already_declared(self):
-        income_list = [
+    @parameterized.expand([
+        [[
             Income(value=1000, description='Weekly salary'),
             Income(value=300, description='Interest on equity'),
             Income(value=1500, description='Rent income'),
-        ]
+        ]],
 
+        [[
+            # Testing empty list
+        ]],
+    ])
+    def test_get_all_income_already_declared(self, income_list: Tuple[Income]):
         income: Income
         for income in income_list:
             self.irrf.register_income(income.value, income.description)
