@@ -42,3 +42,6 @@ class IRRF:
     @declared_incomes.setter
     def declared_incomes(self, value: List[Income]) -> None:
         raise RuntimeError("It is not allowed to change the list of declared income")
+
+    def calculate_tax(self) -> float:
+        return 0.0
