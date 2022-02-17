@@ -1,4 +1,5 @@
 import numbers
+from typing import List
 from exceptions import InvalidIncomeValueError
 
 
@@ -19,3 +20,7 @@ class IRRF:
 
     def register_income(self, value: float, description: str) -> None:
         self.total_income += value
+
+    @property
+    def declared_incomes(self) -> List[Income]:
+        return list()
