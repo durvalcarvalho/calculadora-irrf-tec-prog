@@ -168,6 +168,10 @@ class IRRFTestCase(unittest.TestCase):
             base_range_table,
         )
 
-    def test_effective_rate(self):
+    def test_effective_rate_1(self):
         self.irrf.register_income(value=7500, description='Salary')
         self.assertAlmostEqual(self.irrf.effective_rate, 15.90, delta=0.01)
+
+    def test_effective_rate_2(self):
+        self.irrf.register_income(value=6500, description='Salary')
+        self.assertAlmostEqual(self.irrf.effective_rate, 14.12, delta=0.01)
