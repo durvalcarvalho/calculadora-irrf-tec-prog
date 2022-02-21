@@ -2,7 +2,6 @@ import numbers
 from typing import Dict, List
 from exceptions import InvalidIncomeValueError
 from functools import total_ordering
-from collections import namedtuple
 
 
 @total_ordering
@@ -87,4 +86,6 @@ class IRRF:
 
     @property
     def effective_rate(self) -> float:
-        return 15.90
+        tax = self.calculate_tax()
+        effective_rate = (tax / self.total_income) * 100
+        return round(effective_rate, 2)
