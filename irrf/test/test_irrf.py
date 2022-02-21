@@ -80,9 +80,8 @@ class IRRFTestCase(unittest.TestCase):
         # test case 2
         [ [ Income(value=1903.98, description='Weekly salary'), ], 0.0, ],
 
-        # # test case 3
-        # Broking test
-        # [ [ Income(value=1904.12, description='Weekly salary'), ], 0.1, ],
+        # test case 3 -> **
+        [ [ Income(value=1904.12, description='Weekly salary'), ], 0.0, ],
 
         # test case 4
         [ [ Income(value=2500.00, description='Weekly salary'), ], 44.70, ],
@@ -168,3 +167,7 @@ class IRRFTestCase(unittest.TestCase):
             self.irrf.get_calculation_base_range(year=year),
             base_range_table,
         )
+
+    def test_effective_rate(self):
+        self.irrf.register_income(value=7500, description='Salary')
+        self.assertAlmostEqual(self.irrf.effective_rate, 15.90, delta=0.01)
