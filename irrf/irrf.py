@@ -2,6 +2,7 @@ import numbers
 from typing import List
 from exceptions import InvalidIncomeValueError
 from functools import total_ordering
+from collections import namedtuple
 
 
 @total_ordering
@@ -20,6 +21,7 @@ class Income:
     def __lt__(self, other):
         return self.value < other.value
 
+BaseRange = namedtuple('CalculationBaseRange', 'min max tax')
 
 class IRRF:
 

@@ -2,7 +2,7 @@ from typing import Tuple
 import unittest
 from parameterized import parameterized
 
-from irrf import IRRF, Income
+from irrf import IRRF, Income, BaseRange
 
 
 class IRRFTestCase(unittest.TestCase):
@@ -140,3 +140,20 @@ class IRRFTestCase(unittest.TestCase):
             self.irrf.register_income(income.value, income.description)
 
         self.assertEqual(self.irrf.calculate_tax(), expected_tax)
+
+
+    def test_registration_of_the_calculation_base_range(self):
+        table_2022 = [
+            BaseRange(min=0,       max=1903.98,      tax=0.0),
+            BaseRange(min=1903.99, max=2826.65,      tax=7.5),
+            BaseRange(min=2826.66, max=3751.05,      tax=15.0),
+            BaseRange(min=3751.06, max=4664.68,      tax=22.5),
+            BaseRange(min=4664.69, max=float('inf'), tax=27.5),
+        ]
+
+        self.irrf.register_calculation_base_range(year=2022, table=table_2022)
+
+        self.assertEqual(
+            self.irrf.get_calculation_base_range(year=2022),
+            table_2022,
+        )
