@@ -84,3 +84,7 @@ class IRRF:
 
     def get_calculation_base_range(self, year: int) -> List[BaseRange]:
         return self._calculation_base_ranges[year]
+
+    @property
+    def effective_rate(self) -> float:
+        return 15.90
