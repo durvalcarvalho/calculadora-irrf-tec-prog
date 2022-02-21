@@ -142,7 +142,7 @@ class IRRFTestCase(unittest.TestCase):
         self.assertEqual(self.irrf.calculate_tax(), expected_tax)
 
 
-    def test_registration_of_the_calculation_base_range(self):
+    def test_registration_of_the_calculation_base_range_year_2022(self):
         table_2022 = [
             BaseRange(min=0,       max=1903.98,      tax=0.0),
             BaseRange(min=1903.99, max=2826.65,      tax=7.5),
@@ -156,4 +156,20 @@ class IRRFTestCase(unittest.TestCase):
         self.assertEqual(
             self.irrf.get_calculation_base_range(year=2022),
             table_2022,
+        )
+
+    def test_registration_of_the_calculation_base_range_year_2014(self):
+        table_2014 = [
+            BaseRange(min=0,       max=1787.77,      tax=0.0),
+            BaseRange(min=1787.77, max=2679.29,      tax=7.5),
+            BaseRange(min=2679.30, max=3572.43,      tax=15.0),
+            BaseRange(min=3572.44, max=4463.81,      tax=22.5),
+            BaseRange(min=4463.82, max=float('inf'), tax=27.5),
+        ]
+
+        self.irrf.register_calculation_base_range(year=2014, table=table_2014)
+
+        self.assertEqual(
+            self.irrf.get_calculation_base_range(year=2014),
+            table_2014,
         )
