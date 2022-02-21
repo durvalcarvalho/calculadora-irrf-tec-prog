@@ -21,13 +21,29 @@ class Income:
     def __lt__(self, other):
         return self.value < other.value
 
-BaseRange = namedtuple('CalculationBaseRange', 'min max tax')
+@total_ordering
+class BaseRange:
+    def __init__(self, min: int, max: int, tax: float):
+        self.min = min
+        self.max = max
+        self.tax = tax
+
+    def __eq__(self, other):
+        return(
+            round(self.min, 2) == round(other.min, 2) and
+            round(self.max, 2) == round(other.max, 2) and
+            round(self.tax, 2) == round(other.tax, 2)
+        )
+
+    def __lt__(self, other):
+        return round(self.min, 2) < round(other.min, 2)
 
 class IRRF:
 
     def __init__(self) -> None:
         self.total_income: float = 0
         self._declared_incomes: List[Income] = []
+        self._calculation_base_ranges: Dict[int, List[BaseRange]] = {}
 
     def register_income(self, value: float, description: str) -> None:
         self.total_income += value
@@ -50,25 +66,21 @@ class IRRF:
             return 0
 
         elif 1903.99 <= self.total_income < 2826.66:
-            return self.total_income * (7.5 / 100) - 142.80
+            tax = self.total_income * (7.5 / 100) - 142.80
 
         elif 2826.66 <= self.total_income < 3751.06:
-            return self.total_income * (15 / 100) - 354.80
+            tax = self.total_income * (15 / 100) - 354.80
 
         elif 3751.06 <= self.total_income < 4664.69:
-            return self.total_income * (22.5 / 100) - 636.13
+            tax = self.total_income * (22.5 / 100) - 636.13
 
         else:
-            return self.total_income * (27.5 / 100) - 869.36
+            tax = self.total_income * (27.5 / 100) - 869.36
+
+        return round(tax, 2)
 
     def register_calculation_base_range(self, year: int, table: List[BaseRange]) -> None:
-        ...
+        self._calculation_base_ranges[year] = table
 
     def get_calculation_base_range(self, year: int) -> List[BaseRange]:
-        return [
-            BaseRange(min=0,       max=1903.98,      tax=0.0),
-            BaseRange(min=1903.99, max=2826.65,      tax=7.5),
-            BaseRange(min=2826.66, max=3751.05,      tax=15.0),
-            BaseRange(min=3751.06, max=4664.68,      tax=22.5),
-            BaseRange(min=4664.69, max=float('inf'), tax=27.5),
-        ]
+        return self._calculation_base_ranges[year]
