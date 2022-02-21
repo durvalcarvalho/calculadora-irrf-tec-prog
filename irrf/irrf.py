@@ -1,5 +1,5 @@
 import numbers
-from typing import List
+from typing import Dict, List
 from exceptions import InvalidIncomeValueError
 from functools import total_ordering
 from collections import namedtuple
@@ -60,3 +60,15 @@ class IRRF:
 
         else:
             return self.total_income * (27.5 / 100) - 869.36
+
+    def register_calculation_base_range(self, year: int, table: List[BaseRange]) -> None:
+        ...
+
+    def get_calculation_base_range(self, year: int) -> List[BaseRange]:
+        return [
+            BaseRange(min=0,       max=1903.98,      tax=0.0),
+            BaseRange(min=1903.99, max=2826.65,      tax=7.5),
+            BaseRange(min=2826.66, max=3751.05,      tax=15.0),
+            BaseRange(min=3751.06, max=4664.68,      tax=22.5),
+            BaseRange(min=4664.69, max=float('inf'), tax=27.5),
+        ]
