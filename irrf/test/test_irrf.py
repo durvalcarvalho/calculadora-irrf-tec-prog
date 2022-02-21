@@ -143,34 +143,28 @@ class IRRFTestCase(unittest.TestCase):
         self.assertAlmostEqual(self.irrf.calculate_tax(), expected_tax, delta=0.01)
 
 
-    def test_registration_of_the_calculation_base_range_year_2022(self):
-        table_2022 = [
+    @parameterized.expand([
+        [[
             BaseRange(min=0,       max=1903.98,      tax=0.0),
             BaseRange(min=1903.99, max=2826.65,      tax=7.5),
             BaseRange(min=2826.66, max=3751.05,      tax=15.0),
             BaseRange(min=3751.06, max=4664.68,      tax=22.5),
             BaseRange(min=4664.69, max=float('inf'), tax=27.5),
-        ]
+        ], 2022],
 
-        self.irrf.register_calculation_base_range(year=2022, table=table_2022)
-
-        self.assertEqual(
-            self.irrf.get_calculation_base_range(year=2022),
-            table_2022,
-        )
-
-    def test_registration_of_the_calculation_base_range_year_2014(self):
-        table_2014 = [
+        [[
             BaseRange(min=0,       max=1787.77,      tax=0.0),
             BaseRange(min=1787.77, max=2679.29,      tax=7.5),
             BaseRange(min=2679.30, max=3572.43,      tax=15.0),
             BaseRange(min=3572.44, max=4463.81,      tax=22.5),
             BaseRange(min=4463.82, max=float('inf'), tax=27.5),
-        ]
+        ], 2014],
 
-        self.irrf.register_calculation_base_range(year=2014, table=table_2014)
-        self.assertAlmostEqual(
-            self.irrf.get_calculation_base_range(year=2014),
-            table_2014,
-            places=2,
+    ])
+    def test_registration_of_the_calculation_base_range(self, base_range_table: Tuple[BaseRange], year: int):
+        self.irrf.register_calculation_base_range(year=year, table=base_range_table)
+
+        self.assertEqual(
+            self.irrf.get_calculation_base_range(year=year),
+            base_range_table,
         )
