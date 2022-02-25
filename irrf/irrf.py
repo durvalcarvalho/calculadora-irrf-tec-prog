@@ -90,7 +90,16 @@ class IRRF:
         )
         
     def register_deduction(self, deduction: Tuple[str, Tuple]) -> None:
-        self._official_pension_total_value = 100.0
+        if deduction[0] == "Previdencia oficial":
+            self.register_official_pension(deduction[1][0], deduction[1][1])
+        elif deduction[0] == "Dependende":
+            for name in deduction[1]:
+                self.register_dependent(name)
+        elif deduction[0] == "Pensão alimenticia":
+            for value in deduction[1]:
+                self.register_food_pension(value)
+        elif deduction[0] == "Outras deducoes":
+            self.register_other_deductions(deduction[1][0], deduction[1][1])
 
     @property
     def declared_incomes(self) -> List[Income]:

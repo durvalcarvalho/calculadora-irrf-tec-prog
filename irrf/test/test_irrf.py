@@ -73,13 +73,28 @@ class IRRFTestCase(unittest.TestCase):
             list(income_list),
         )
     
-    def test_get_all_deductions(self):
-        self.irrf.register_deduction(("Previdencia oficial", ("Contribuicao compulsoria", 100.0)))  
-        self.assertEqual(self.irrf.all_deductions, 100.0)
-        
-    def test_get_all_deductions_2(self):
-        self.irrf.register_deduction(("Previdencia oficial", ("Carne INSS", 80.0)))  
-        self.assertEqual(self.irrf.all_deductions, 80.0)
+    @parameterized.expand([
+        [[ 
+            ("Previdencia oficial", ("Contribuicao compulsoria", 100.0)),
+            ("Previdencia oficial", ("Carne INSS", 80.0)),
+            ("Dependende", (["Lucas", "Herick"])),
+            ("Pensão alimenticia", ([150.0, 200.0])),
+            ("Outras deducoes", ("Previdencia privada", 200.0)),
+            ("Outras deducoes", ("Funpresp", 50.0)),
+        ], 1159.18 ],
+
+        [[
+            ("Previdencia oficial", ("Carne INSS", 500.0)),
+            ("Dependende", (["Durval", "Leo", "Hugo"])),
+            ("Pensão alimenticia", ([300.0])),
+            ("Outras deducoes", ("Carne-leao", 200.0)),
+        ], 1568.77],
+    ])
+    def test_get_all_deductions(self, deductions_list, expected_deduction):
+        for deduction in deductions_list:
+            self.irrf.register_deduction(deduction)
+            
+        self.assertAlmostEqual(self.irrf.all_deductions, expected_deduction, delta=0.01)
 
     @parameterized.expand([
         # test case 1
