@@ -56,17 +56,13 @@ class TestDeduction(unittest.TestCase):
             with self.assertRaises(ValorDeducaoInvalidoException):
                 Deduction('Dependente', description='Dependente', value=189.59, name=name)
 
-    def test_register_food_pension(self):
-        self.irrf.register_food_pension(1500.0)
-        self.assertEqual(self.irrf.get_total_food_pension(), 1500.0)
-
-    def test_register_food_pension_2(self):
-        self.irrf.register_food_pension(1500.0)
-        self.irrf.register_food_pension(300.0)
-        self.assertEqual(self.irrf.get_total_food_pension(), 1800.0)
-
-
-# Co-authored-by: Hérick Portugues <herick.portugues@gmail.com>
-# Co-authored-by: Lucas Ursulino Boaventura <lucasxboaventura@hotmail.com>
-# Co-authored-by: Leonardo Gomes <leonardodasigomes@gmail.com>
-# Co-authored-by: Durval Carvalho <durvalcsouza@outlook.com>
+    @parameterized.expand([
+        ([1500.0], 1500.0),
+        ([1500.0, 300.0], 1800.0),
+        ([1500.0, 300.0, 200.0], 2000.0),
+    ])
+    def test_register_food_pension(self, values, expect):
+        for value in values:
+            self.irrf.register_food_pension(value)
+        
+        self.assertEqual(self.irrf.get_total_food_pension(), expect)
