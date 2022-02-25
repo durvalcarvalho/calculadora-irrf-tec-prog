@@ -99,20 +99,20 @@ class IRRF:
         raise RuntimeError("It is not allowed to change the list of declared income")
 
     def calculate_tax(self) -> float:
-        if self.total_income < 1903.99:
+        if self.calculation_basis < 1903.99:
             return 0
 
-        elif 1903.99 <= self.total_income < 2826.66:
-            tax = self.total_income * (7.5 / 100) - 142.80
+        elif 1903.99 <= self.calculation_basis < 2826.66:
+            tax = self.calculation_basis * (7.5 / 100) - 142.80
 
-        elif 2826.66 <= self.total_income < 3751.06:
-            tax = self.total_income * (15 / 100) - 354.80
+        elif 2826.66 <= self.calculation_basis < 3751.06:
+            tax = self.calculation_basis * (15 / 100) - 354.80
 
-        elif 3751.06 <= self.total_income < 4664.69:
-            tax = self.total_income * (22.5 / 100) - 636.13
+        elif 3751.06 <= self.calculation_basis < 4664.69:
+            tax = self.calculation_basis * (22.5 / 100) - 636.13
 
         else:
-            tax = self.total_income * (27.5 / 100) - 869.36
+            tax = self.calculation_basis * (27.5 / 100) - 869.36
 
         return round(tax, 2)
 
@@ -150,8 +150,13 @@ class IRRF:
     def get_other_deductions(self) -> float:
         return self._other_deductions_value
 
-    def get_all_deductions(self) -> float:
+    @property
+    def all_deductions(self) -> float:
         return self._official_pension_total_value + self._dependent_deductions + self._food_pension + self._other_deductions_value
+    
+    @property
+    def calculation_basis(self):
+        return self.total_income - self.all_deductions
 
     @property
     def effective_rate(self) -> float:
