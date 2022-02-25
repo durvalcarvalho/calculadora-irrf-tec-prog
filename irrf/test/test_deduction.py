@@ -35,3 +35,7 @@ class TestDeduction(unittest.TestCase):
     def test_blank_name_register_official_pension(self, description, value):
         with self.assertRaises(ValorDeducaoInvalidoException):
             Deduction('Previdencia oficial', description=description, value=value)
+
+    def test_register_dependent(self):
+        self.irrf.register_dependent('Guilherme')
+        self.assertEqual(self.irrf.get_total_dependent_deductions(), 189.59)

@@ -1,6 +1,6 @@
 import numbers
 from typing import Dict, List
-from exceptions import DescricaoEmBrancoException, InvalidIncomeValueError, ValorDeducaoInvalidoException
+from exceptions import DescricaoEmBrancoException, InvalidIncomeValueError, NomeEmBrancoException, ValorDeducaoInvalidoException
 from functools import total_ordering
 
 
@@ -22,7 +22,7 @@ class Income:
 
 @total_ordering
 class Deduction:
-    def __init__(self, type: str, description: str, value: float) -> None:
+    def __init__(self, type: str, description: str, value: float, name: str='') -> None:
         if not isinstance(value, numbers.Number) or value <= 0:
             raise ValorDeducaoInvalidoException(
                 f'The deduction value must be a positive number, got {value}'
@@ -30,6 +30,9 @@ class Deduction:
         
         if len(description) < 1:
             raise DescricaoEmBrancoException('The deduction description must be filled')
+
+        if len(name) < 1 and type == "Dependente":
+            raise NomeEmBrancoException('You must prove the dependent name')
 
         self.type = type
         self.description = description
@@ -117,6 +120,13 @@ class IRRF:
 
     def get_total_official_pension(self) -> float:
         return self._official_pension_total_value
+
+    def register_dependent(self, name: str) -> None:
+       self._declared_deductions.append(Deduction(type="Dependente", description="Dependente", value=189.59, name=name))
+       self._dependent_deductions += 189.59
+
+    def get_total_dependent_deductions(self) -> float:
+        return self._dependent_deductions
 
     @property
     def effective_rate(self) -> float:
