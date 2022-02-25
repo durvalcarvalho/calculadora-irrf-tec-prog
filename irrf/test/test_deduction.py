@@ -1,3 +1,4 @@
+from unicodedata import name
 import unittest
 
 from irrf import IRRF, Deduction
@@ -46,4 +47,12 @@ class TestDeduction(unittest.TestCase):
         for name in names:
             self.irrf.register_dependent(name)
         self.assertEqual(self.irrf.get_total_dependent_deductions(), value)
+
+    @parameterized.expand([
+        (['']),
+    ])
+    def test_blank_name_dependent(self, names):
+        for name in names:
+            with self.assertRaises(ValorDeducaoInvalidoException):
+                Deduction('Dependente', description='Dependente', value=189.59, name=name)
 
