@@ -144,6 +144,9 @@ class IRRF:
     def get_other_deductions(self) -> float:
         return self._other_deductions_value
 
+    def get_all_deductions(self) -> float:
+        return self._official_pension_total_value + self._dependent_deductions + self._food_pension + self._other_deductions_value
+
     @property
     def effective_rate(self) -> float:
         tax = self.calculate_tax()

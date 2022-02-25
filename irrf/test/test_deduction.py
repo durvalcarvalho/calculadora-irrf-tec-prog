@@ -67,12 +67,22 @@ class TestDeduction(unittest.TestCase):
         
         self.assertEqual(self.irrf.get_total_food_pension(), expect)
 
-    def test_other_deductions(self):
-        self.irrf.register_other_deductions('Previdencia privada', 500.0)
-        self.assertEqual(self.irrf.get_other_deductions(), 500.0)
 
-    def test_other_deductions_2(self):
-        self.irrf.register_other_deductions('Previdencia privada', 800.0)
-        self.irrf.register_other_deductions('Funpresp', 200.0)
-        self.assertEqual(self.irrf.get_other_deductions(), 1000.0)
+    @parameterized.expand([
+        ([('Previdencia privada', 500.0)], 500.0),
+        ([
+            ('Previdencia privada', 500.0),
+            ('Funpresp', 500.0)
+        ], 1000.0),
+        ([
+            ('Previdencia privada', 500.0),
+            ('Funpresp', 500.0),
+            ('Carne-leao', 300.0)
+        ], 1300.0),
+    ])
+    def test_other_deductions(self, objects, expect):
+        for object in objects:
+            self.irrf.register_other_deductions(object[0], object[1])
+
+        self.assertEqual(self.irrf.get_other_deductions(), expect)
 
