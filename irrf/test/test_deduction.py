@@ -39,3 +39,8 @@ class TestDeduction(unittest.TestCase):
     def test_register_dependent(self):
         self.irrf.register_dependent('Guilherme')
         self.assertEqual(self.irrf.get_total_dependent_deductions(), 189.59)
+
+    def test_register_dependent_2(self):
+        self.irrf.register_dependent('Guilherme')
+        self.irrf.register_dependent('Felipe')
+        self.assertEqual(self.irrf.get_total_dependent_deductions(), (189.59)*2)
