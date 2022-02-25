@@ -131,77 +131,119 @@ class IRRFTestCase(unittest.TestCase):
             self.irrf.register_deduction(deduction)
         
         self.assertEqual(self.irrf.calculation_basis, expected_result)
-        
-    def test_get_calculation_basis_2(self):
-        self.irrf.register_income(3520, "Sálario")
-        self.irrf.register_deduction(("Outras deducoes", ("Previdencia privada", 1000.0)))
-        self.assertEqual(self.irrf.calculation_basis, 2520.00)
 
     @parameterized.expand([
         # test case 1
-        [ [ Income(value=1000.00, description='Weekly salary'), ], 0.0, ],
+        [ [ Income(value=1000.00, description='Weekly salary') ], [ ], 0.0, ],
 
         # test case 2
-        [ [ Income(value=1903.98, description='Weekly salary'), ], 0.0, ],
+        [ [ Income(value=1903.98, description='Weekly salary') ], [ ], 0.0, ],
 
         # test case 3 -> **
-        [ [ Income(value=1904.12, description='Weekly salary'), ], 0.0, ],
+        [ [ Income(value=1904.12, description='Weekly salary') ], [ ], 0.0, ],
 
         # test case 4
-        [ [ Income(value=2500.00, description='Weekly salary'), ], 44.70, ],
+        [ 
+            [ Income(value=2500.00, description='Weekly salary'), ], 
+            [ ("Dependende", (["Joao"])) ], 
+            30.48,
+        ],
 
         # test case 5
-        [ [ Income(value=2826.65, description='Weekly salary'), ], 69.20, ],
+        [ 
+            [ Income(value=2826.65, description='Weekly salary'), ],
+            [ ("Previdencia oficial", ("Contribuicao compulsoria", 950.0)) ],
+            0.0, 
+        ],
 
         # test case 6
-        [ [ Income(value=3000.00, description='Weekly salary'), ], 95.20, ],
+        [ 
+            [ Income(value=3000.00, description='Weekly salary'), ],
+            [ ("Dependende", (["Pedro"])), ("Pensão alimenticia", ([400.0])) ],
+            37.98, 
+        ],
 
         # test case 7
-        [ [ Income(value=3500.00, description='Weekly salary'), ], 170.20, ],
+        [ 
+            [ Income(value=3000.00, description='Weekly salary'), Income(value=500.00, description='Ações')],
+            [ ],
+            170.20
+        ],
 
         # test case 8
-        [ [ Income(value=3750.00, description='Weekly salary'), ], 207.70, ],
+        [ 
+            [ Income(value=3750.00, description='Weekly salary'), ],
+            [ ("Previdencia oficial", ("Carne INSS", 500.0)), ("Outras deducoes", ("Previdencia privada", 400.0)) ],
+            72.70, 
+        ],
 
         # test case 9
-        [ [ Income(value=3751.05, description='Weekly salary'), ], 207.86, ],
+        [ [ Income(value=3751.05, description='Weekly salary'), ], [ ], 207.86, ],
 
         # test case 10
-        [ [ Income(value=3751.09, description='Weekly salary'), ], 207.86, ],
+        [ [ Income(value=3751.09, description='Weekly salary'), ], [ ], 207.86, ],
 
         # test case 11
-        [ [ Income(value=4000.00, description='Weekly salary'), ], 263.87, ],
+        [ 
+            [ Income(value=4000.00, description='Weekly salary'), ],
+            [  ("Dependende", (["Pedro", "Joao"])) ],
+            188.32,
+        ],
 
         # test case 12
-        [ [ Income(value=4500.00, description='Weekly salary'), ], 376.37, ],
+        [ 
+            [ Income(value=4500.00, description='Weekly salary'), ],
+            [ ("Pensão alimenticia", ([600.0, 350.0])) ],
+            177.70, 
+        ],
 
         # test case 13
-        [ [ Income(value=4500.00, description='Weekly salary'), ], 376.37, ],
+        [ 
+            [ Income(value=4500.00, description='Weekly salary'), ], 
+            [ ("Outras deducoes", ("Previdencia privada", 500.0)) ], 
+            263.87, 
+        ],
 
         # test case 14
-        [ [ Income(value=4664.68, description='Weekly salary'), ], 413.42, ],
+        [ [ Income(value=4664.68, description='Weekly salary'), ], [ ], 413.42, ],
 
         # test case 15
-        [ [ Income(value=4664.69, description='Weekly salary'), ], 413.42, ],
+        [ [ Income(value=4664.69, description='Weekly salary'), ], [ ], 413.42, ],
 
         # test case 16
-        [ [ Income(value=5000.00, description='Weekly salary'), ], 505.64, ],
+        [ 
+            [ Income(value=5000.00, description='Weekly salary'), ],
+            [ ("Previdencia oficial", ("Carne INSS", 500.0)), ("Dependende", (["Pedro", "Joao"])) ],
+            291.05, 
+        ],
 
         # test case 17
-        [ [ Income(value=6000.00, description='Weekly salary'), ], 780.64, ],
+        [ 
+            [ Income(value=6000.00, description='Weekly salary'), ],
+            [ ("Outras deducoes", ("Previdencia privada", 850.0)), ("Pensão alimenticia", ([600.0, 200.0])) ],
+            342.62,
+        ],
 
         # test case 18
-        [ [ Income(value=7000.00, description='Weekly salary'), ], 1055.64, ],
+        [ [ Income(value=7000.00, description='Weekly salary'), ], [ ], 1055.64, ],
 
         # test case 19
-        [ [ Income(value=8000.00, description='Weekly salary'), ], 1330.64, ],
+        [ 
+            [ Income(value=8000.00, description='Weekly salary'), ],
+            [ ("Dependende", (["Maria", "Joao", "Vinicius", "Fernanda"])) ],
+            1122.09, 
+        ],
 
         # test case 20
-        [ [ Income(value=9000.00, description='Weekly salary'), ], 1605.64, ],
+        [ [ Income(value=9000.00, description='Weekly salary'), ], [ ], 1605.64, ],
     ])
-    def test_tax_calculation(self, income_list: Tuple[Income], expected_tax: float):
+    def test_tax_calculation(self, income_list: Tuple[Income], deduction_list, expected_tax: float):
         income: Income
         for income in income_list:
             self.irrf.register_income(income.value, income.description)
+            
+        for deduction in deduction_list:
+            self.irrf.register_deduction(deduction)
 
         self.assertAlmostEqual(self.irrf.calculate_tax(), expected_tax, delta=0.01)
 
