@@ -7,10 +7,10 @@ Repositório destinado ao desenvolvimento do trabalho prático da disciplina de 
 | Nome | Matrícula |
 | ---- | --------- |
 | Durval Carvalho | A INSERIR |
-| Hérick Portugues | A INSERIR |
+| Hérick Portugues | 180033034 |
 | Hugo Sobral de Lima | 180018604 |
 | Leonardo da Silva Gomes | 180021974 |
-| Lucas Ursulino Boaventura | A INSERIR |
+| Lucas Ursulino Boaventura | 180114093 |
 
 ## Executando os testes do projeto
 
