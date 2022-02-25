@@ -72,6 +72,10 @@ class IRRFTestCase(unittest.TestCase):
             list(self.irrf.declared_incomes),
             list(income_list),
         )
+    
+    def test_get_all_deductions(self):
+        self.irrf.register_deduction(("Previdencia oficial", ("Contribuicao compulsoria", 100.0)))  
+        self.assertEqual(self.irrf.all_deductions, 100.0)
 
     @parameterized.expand([
         # test case 1

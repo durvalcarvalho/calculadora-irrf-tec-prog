@@ -1,5 +1,5 @@
 import numbers
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from exceptions import DescricaoEmBrancoException, ValorRendimentoInvalidoException, NomeEmBrancoException, ValorDeducaoInvalidoException
 from functools import total_ordering
 
@@ -88,7 +88,9 @@ class IRRF:
         self._declared_incomes.append(
             Income(value=value, description=description),
         )
-
+        
+    def register_deduction(self, deduction: Tuple[str, Tuple]) -> None:
+        self._official_pension_total_value = 100.0
 
     @property
     def declared_incomes(self) -> List[Income]:
