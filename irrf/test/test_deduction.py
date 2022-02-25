@@ -1,22 +1,37 @@
 import unittest
 
-from irrf import IRRF
+from irrf import IRRF, Deduction
+from parameterized import parameterized
+from exceptions import DescricaoEmBrancoException, ValorDeducaoInvalidoException
 
 
 class TestDeduction(unittest.TestCase):
     def setUp(self):
         self.irrf = IRRF()
 
-    def test_register_official_pension(self):
-        self.irrf.register_official_pension("Contribuicao compulsoria", 1000.0)
-        self.assertEqual(self.irrf.get_total_official_pension(), 1000.0)
+    @parameterized.expand([
+        ('Contribuicao compulsoria', 1000.0),
+        ('Carne INSS', 800.0),
+        ('Carne INSS 2', 200.0)
+    ])
+    def test_register_official_pension(self, description, value):
+        self.irrf.register_official_pension(description, value)
+        self.assertEqual(self.irrf.get_total_official_pension(), value)
 
-    def test_another_register_official_pension(self):
-        self.irrf.register_official_pension("Contribuicao compulsoria", 800.0)
-        self.assertEqual(self.irrf.get_total_official_pension(), 800.0)
+    @parameterized.expand([
+        ('', 100.0),
+        ('', 300.0),
+        ('', 400.0),
+    ])
+    def test_blank_name_register_official_pension(self, description, value):
+        with self.assertRaises(DescricaoEmBrancoException):
+            Deduction('Previdencia oficial', description=description, value=value)
 
-    def test_multiple_register_official_pension(self):
-        self.irrf.register_official_pension("Contribuicao compulsoria", 800.0)
-        self.irrf.register_official_pension("Carne Inss", 1000.0)
-        self.irrf.register_official_pension("Carne Inss 2", 200.0)
-        self.assertEqual(self.irrf.get_total_official_pension(), 2000.0)
+    @parameterized.expand([
+        ('Contribuicao compulsoria', -100.0),
+        ('Carne INSS', -300.0),
+        ('Carne INSS 2', -400.0),
+    ])
+    def test_blank_name_register_official_pension(self, description, value):
+        with self.assertRaises(ValorDeducaoInvalidoException):
+            Deduction('Previdencia oficial', description=description, value=value)

@@ -1,6 +1,6 @@
 import numbers
 from typing import Dict, List
-from exceptions import InvalidIncomeValueError
+from exceptions import DescricaoEmBrancoException, InvalidIncomeValueError, ValorDeducaoInvalidoException
 from functools import total_ordering
 
 
@@ -23,6 +23,14 @@ class Income:
 @total_ordering
 class Deduction:
     def __init__(self, type: str, description: str, value: float) -> None:
+        if not isinstance(value, numbers.Number) or value <= 0:
+            raise ValorDeducaoInvalidoException(
+                f'The deduction value must be a positive number, got {value}'
+            )
+        
+        if len(description) < 1:
+            raise DescricaoEmBrancoException('The deduction description must be filled')
+
         self.type = type
         self.description = description
         self.value = value
@@ -61,6 +69,7 @@ class IRRF:
         self._calculation_base_ranges: Dict[int, List[BaseRange]] = {}
         self._declared_deductions: List[Deduction] = []
         self._official_pension_total_value = 0.0
+        self._dependent_deductions = 0.0
 
     def register_income(self, value: float, description: str) -> None:
         self.total_income += value
