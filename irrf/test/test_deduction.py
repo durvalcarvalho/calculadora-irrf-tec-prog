@@ -56,3 +56,6 @@ class TestDeduction(unittest.TestCase):
             with self.assertRaises(ValorDeducaoInvalidoException):
                 Deduction('Dependente', description='Dependente', value=189.59, name=name)
 
+    def test_register_food_pension(self):
+        self.irrf.register_food_pension(1500.0)
+        self.assertEqual(self.irrf.get_total_food_pension(), 1500.0)

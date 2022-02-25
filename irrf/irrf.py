@@ -73,6 +73,7 @@ class IRRF:
         self._declared_deductions: List[Deduction] = []
         self._official_pension_total_value = 0.0
         self._dependent_deductions = 0.0
+        self._food_pension = 0.0
 
     def register_income(self, value: float, description: str) -> None:
         self.total_income += value
@@ -127,6 +128,13 @@ class IRRF:
 
     def get_total_dependent_deductions(self) -> float:
         return self._dependent_deductions
+
+    def register_food_pension(self, value: float) -> None:
+        self._declared_deductions.append(Deduction(type="Pensão alimenticia", description="Pensao alimenticia", value=value))
+        self._food_pension += value
+
+    def get_total_food_pension(self) -> float:
+        return self._food_pension
 
     @property
     def effective_rate(self) -> float:
