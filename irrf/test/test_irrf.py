@@ -95,11 +95,42 @@ class IRRFTestCase(unittest.TestCase):
             self.irrf.register_deduction(deduction)
             
         self.assertAlmostEqual(self.irrf.all_deductions, expected_deduction, delta=0.01)
+    
+    @parameterized.expand([
+        [
+            [
+                Income(value=4125.00, description='Sálario'),
+                Income(value=1023.54, description='Ações'),
+            ],
+            [
+                ("Previdencia oficial", ("Contribuicao compulsoria", 400.0)),
+                ("Dependende", (["Durval", "Leo", "Hugo"]))
+            ], 
+            4179.77
+        ],
         
-    def test_get_calculation_basis(self):
-        self.irrf.register_income(2500, "Sálario")
-        self.irrf.register_deduction(("Dependende", (["Lucas", "Herick"])))
-        self.assertEqual(self.irrf.calculation_basis, 2120.82)
+        [
+            [
+                Income(value=3000.00, description='Sálario'),
+                Income(value=520.00, description='Ações'),
+                Income(value=750.00, description='Alguel recebido'),
+            ],
+            [
+                ("Outras deducoes", ("Previdencia privada", 400.0)),
+                ("Pensão alimenticia", ([400.0, 400.0])),
+            ], 
+            3070.00
+        ]
+    ])   
+    def test_get_calculation_basis(self, income_list, deduction_list, expected_result):
+        income: Income
+        for income in income_list:
+            self.irrf.register_income(income.value, income.description)
+            
+        for deduction in deduction_list: 
+            self.irrf.register_deduction(deduction)
+        
+        self.assertEqual(self.irrf.calculation_basis, expected_result)
         
     def test_get_calculation_basis_2(self):
         self.irrf.register_income(3520, "Sálario")

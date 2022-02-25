@@ -167,7 +167,7 @@ class IRRF:
     
     @property
     def calculation_basis(self):
-        return 2120.82
+        return self.total_income - self.all_deductions
 
     @property
     def effective_rate(self) -> float:
