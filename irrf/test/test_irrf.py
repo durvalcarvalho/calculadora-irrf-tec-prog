@@ -276,56 +276,96 @@ class IRRFTestCase(unittest.TestCase):
 
     @parameterized.expand([
         # test case 1
-        [ [ Income(value=1000.00, description='Weekly salary'), ], 0.0, ],
+        [ [ Income(value=1000.00, description='Weekly salary'), ], [ ], 0.0, ],
 
         # test case 2
-        [ [ Income(value=1903.98, description='Weekly salary'), ], 0.0, ],
+        [ [ Income(value=1903.98, description='Weekly salary'), ], [ ], 0.0, ],
 
         # test case 3 -> **
-        [ [ Income(value=1904.12, description='Weekly salary'), ], 0.0, ],
+        [ [ Income(value=1904.12, description='Weekly salary'), ], [ ], 0.0, ],
 
         # test case 4
-        [ [ Income(value=2500.00, description='Weekly salary'), ], 1.78, ],
+        [ [ Income(value=2500.00, description='Weekly salary'), ], [ ], 1.78, ],
 
         # test case 5
-        [ [ Income(value=2826.65, description='Weekly salary'), ], 2.44, ],
+        [ [ Income(value=2826.65, description='Weekly salary'), ], [ ], 2.44, ],
 
         # test case 6
-        [ [ Income(value=3000.00, description='Weekly salary'), ], 3.17, ],
+        [ 
+            [ Income(value=3000.00, description='Weekly salary'), ], 
+            [ ("Pensão alimenticia", ([600.0])), ("Dependende", (["Maria"])) ],
+            0.76,
+        ],
 
         # test case 7
-        [ [ Income(value=3500.00, description='Weekly salary'), ], 4.86, ],
+        [ 
+            [ 
+                Income(value=3000.00, description='Weekly salary'), 
+                Income(value=500.00, description='Trasferência')
+            ], 
+            [ ],
+            4.86,
+        ],
 
         # test case 8
-        [ [ Income(value=3750.00, description='Weekly salary'), ], 5.53, ],
+        [ 
+            [ Income(value=3750.00, description='Weekly salary'), ], 
+            [ ("Outras deducoes", ("Previdencia privada", 250.0)) ],
+            4.53, 
+        ],
 
         # test case 9
-        [ [ Income(value=3751.05, description='Weekly salary'), ], 5.54, ],
+        [ [ Income(value=3751.05, description='Weekly salary'), ], [ ], 5.54, ],
 
         # test case 10
-        [ [ Income(value=3751.09, description='Weekly salary'), ], 5.54, ],
+        [ [ Income(value=3751.09, description='Weekly salary'), ], [ ], 5.54, ],
 
         # test case 11
-        [ [ Income(value=4751.09, description='Weekly salary'), ], 9.20, ],
+        [ [ Income(value=4751.09, description='Weekly salary'), ], [ ], 9.20, ],
 
         # test case 12
-        [ [ Income(value=4832.17, description='Weekly salary'), ], 9.50, ],
+        [ 
+            [ 
+                Income(value=4832.17, description='Weekly salary'), 
+                Income(value=400.00, description='Trasferência')
+            ], 
+            [ ],
+            10.88,
+        ],
 
         # test case 13
-        [ [ Income(value=8432.17, description='Weekly salary'), ], 17.18, ],
+        [ [ Income(value=8432.17, description='Weekly salary'), ], [ ], 17.18, ],
 
         # test case 14
-        [ [ Income(value=18432.17, description='Weekly salary'), ], 22.78, ],
+        [ 
+            [ Income(value=18432.17, description='Weekly salary'), ],
+            [ ("Pensão alimenticia", ([600.0, 600.0, 600.00])) ],
+            20.09,
+        ],
 
         # test case 15
-        [ [ Income(value=81432.17, description='Weekly salary'), ], 26.43, ],
+        [ 
+            [ Income(value=81432.17, description='Weekly salary'), ], 
+            [ ("Dependende", (["Maria", "João", "Vinicius", "Fernanda", "José"])) ],
+            26.11, 
+        ],
 
         # test case 16
-        [ [ Income(value=200000.00, description='Weekly salary'), ], 27.06, ],
+        [ 
+            [ Income(value=200000.00, description='Weekly salary'), ],
+            [ 
+                ("Previdencia oficial", ("Carne INSS", 1200.0)), 
+                ("Pensão alimenticia", ([800.0])) 
+            ], 
+            26.79,
+        ],
     ])
-    def test_effective_rate(self, income_list: Tuple[Income], expected_rate: float):
+    def test_effective_rate(self, income_list: Tuple[Income], deduction_list, expected_rate: float):
         income: Income
         for income in income_list:
             self.irrf.register_income(income.value, income.description)
+            
+        for deduction in deduction_list:
+            self.irrf.register_deduction(deduction)
 
         self.assertAlmostEqual(self.irrf.effective_rate, expected_rate, delta=0.02)
