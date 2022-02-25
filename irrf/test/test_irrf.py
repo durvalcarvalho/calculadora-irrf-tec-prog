@@ -100,6 +100,11 @@ class IRRFTestCase(unittest.TestCase):
         self.irrf.register_income(2500, "Sálario")
         self.irrf.register_deduction(("Dependende", (["Lucas", "Herick"])))
         self.assertEqual(self.irrf.calculation_basis, 2120.82)
+        
+    def test_get_calculation_basis_2(self):
+        self.irrf.register_income(3520, "Sálario")
+        self.irrf.register_deduction(("Outras deducoes", ("Previdencia privada", 1000.0)))
+        self.assertEqual(self.irrf.calculation_basis, 2520.00)
 
     @parameterized.expand([
         # test case 1
