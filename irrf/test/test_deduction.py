@@ -66,3 +66,8 @@ class TestDeduction(unittest.TestCase):
             self.irrf.register_food_pension(value)
         
         self.assertEqual(self.irrf.get_total_food_pension(), expect)
+
+    def test_other_deductions(self):
+        self.irrf.register_other_deductions('Previdencia privada', 500.0)
+        self.assertEqual(self.irrf.get_other_deductions(), 500.0)
+        
