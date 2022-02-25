@@ -43,6 +43,8 @@ class IRRF:
         self.total_income: float = 0
         self._declared_incomes: List[Income] = []
         self._calculation_base_ranges: Dict[int, List[BaseRange]] = {}
+        self._official_pension_description = ""
+        self._official_pension_total_value = 0.0
 
     def register_income(self, value: float, description: str) -> None:
         self.total_income += value
@@ -83,6 +85,13 @@ class IRRF:
 
     def get_calculation_base_range(self, year: int) -> List[BaseRange]:
         return self._calculation_base_ranges[year]
+
+    def register_official_pension(self, description: str, value: float) -> None:
+        self._official_pension_description = description
+        self._official_pension_total_value = value
+
+    def get_total_official_pension(self) -> float:
+        return self._official_pension_total_value
 
     @property
     def effective_rate(self) -> float:
