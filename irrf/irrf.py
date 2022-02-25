@@ -21,6 +21,22 @@ class Income:
         return self.value < other.value
 
 @total_ordering
+class Deduction:
+    def __init__(self, type: str, description: str, value: float) -> None:
+        self.type = type
+        self.description = description
+        self.value = value
+
+    def __eq__(self, other):
+        return self.value == other.value and self.description == other.description
+
+    def __lt__(self, other):
+        return self.value < other.value
+
+    def __gt__(self, other):
+        return self.value > other.value
+
+@total_ordering
 class BaseRange:
     def __init__(self, min: int, max: int, tax: float):
         self.min = min
@@ -43,7 +59,7 @@ class IRRF:
         self.total_income: float = 0
         self._declared_incomes: List[Income] = []
         self._calculation_base_ranges: Dict[int, List[BaseRange]] = {}
-        self._official_pension_description = ""
+        self._declared_deductions: List[Deduction] = []
         self._official_pension_total_value = 0.0
 
     def register_income(self, value: float, description: str) -> None:
@@ -87,8 +103,8 @@ class IRRF:
         return self._calculation_base_ranges[year]
 
     def register_official_pension(self, description: str, value: float) -> None:
-        self._official_pension_description = description
-        self._official_pension_total_value = value
+        self._declared_deductions.append(Deduction(type="Previdencia oficial", description=description, value=value))
+        self._official_pension_total_value += value
 
     def get_total_official_pension(self) -> float:
         return self._official_pension_total_value
