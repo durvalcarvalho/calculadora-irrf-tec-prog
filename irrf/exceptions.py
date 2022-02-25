@@ -1,6 +1,6 @@
 
 
-class InvalidIncomeValueError(Exception):
+class ValorRendimentoInvalidoException(Exception):
     """
     Exception raised when the income is not a positive numeric value.
     """

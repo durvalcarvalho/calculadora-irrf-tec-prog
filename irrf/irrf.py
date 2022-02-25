@@ -1,6 +1,6 @@
 import numbers
 from typing import Dict, List
-from exceptions import DescricaoEmBrancoException, InvalidIncomeValueError, NomeEmBrancoException, ValorDeducaoInvalidoException
+from exceptions import DescricaoEmBrancoException, ValorRendimentoInvalidoException, NomeEmBrancoException, ValorDeducaoInvalidoException
 from functools import total_ordering
 
 
@@ -8,9 +8,15 @@ from functools import total_ordering
 class Income:
     def __init__(self, value: int, description: str):
         if not isinstance(value, numbers.Number) or value <= 0:
-            raise InvalidIncomeValueError(
+            raise ValorRendimentoInvalidoException(
                 f'The income value must be a positive number, got {value}'
             )
+            
+        if not description.strip():
+            raise DescricaoEmBrancoException(
+                'The income description must be filled'
+            )
+            
         self.value = value
         self.description = description
 

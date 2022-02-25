@@ -1,6 +1,6 @@
 import unittest
 from irrf import Income
-from exceptions import InvalidIncomeValueError
+from exceptions import ValorRendimentoInvalidoException, DescricaoEmBrancoException
 
 from parameterized import parameterized
 
@@ -24,7 +24,7 @@ class IncomeTestCase(unittest.TestCase):
         (-25, 'Nubank Interest'),
     ])
     def tests_if_the_constructor_refuses_negative_values(self, value, description):
-        with self.assertRaises(InvalidIncomeValueError):
+        with self.assertRaises(ValorRendimentoInvalidoException):
             Income(value, description)
 
     @parameterized.expand([
@@ -35,5 +35,14 @@ class IncomeTestCase(unittest.TestCase):
         ({1:10, 2:20}, 'Nubank Interest'),
     ])
     def test_if_constructor_refuses_non_numeric_values(self, value, description):
-        with self.assertRaises(InvalidIncomeValueError):
+        with self.assertRaises(ValorRendimentoInvalidoException):
+            Income(value, description)
+            
+    @parameterized.expand([
+        (1000.0, ''),
+        (10.0, ' '),
+        (500.0, '     '),
+    ])
+    def test_if_constructor_refuses_blank_descriptions(self, value, description):
+        with self.assertRaises(DescricaoEmBrancoException):
             Income(value, description)
