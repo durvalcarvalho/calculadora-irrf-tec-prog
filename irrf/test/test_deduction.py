@@ -36,11 +36,14 @@ class TestDeduction(unittest.TestCase):
         with self.assertRaises(ValorDeducaoInvalidoException):
             Deduction('Previdencia oficial', description=description, value=value)
 
-    def test_register_dependent(self):
-        self.irrf.register_dependent('Guilherme')
-        self.assertEqual(self.irrf.get_total_dependent_deductions(), 189.59)
 
-    def test_register_dependent_2(self):
-        self.irrf.register_dependent('Guilherme')
-        self.irrf.register_dependent('Felipe')
-        self.assertEqual(self.irrf.get_total_dependent_deductions(), (189.59)*2)
+    @parameterized.expand([
+        (['Guilherme'], 189.59),
+        (['Guilherme', 'Felipe'], 189.59*2),
+        (['Guilherme', 'Felipe', 'Barbara'], 189.59*3),
+    ])
+    def test_register_dependent(self, names, value):
+        for name in names:
+            self.irrf.register_dependent(name)
+        self.assertEqual(self.irrf.get_total_dependent_deductions(), value)
+
