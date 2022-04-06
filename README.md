@@ -6,7 +6,7 @@ Repositório destinado ao desenvolvimento do trabalho prático da disciplina de 
 
 | Nome | Matrícula |
 | ---- | --------- |
-| Durval Carvalho | A INSERIR |
+| Durval Carvalho | 16/0005191 |
 | Hérick Portugues | 180033034 |
 | Hugo Sobral de Lima | 180018604 |
 | Leonardo da Silva Gomes | 180021974 |
