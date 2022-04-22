@@ -90,16 +90,17 @@ class IRRF:
         )
         
     def register_deduction(self, deduction: Tuple[str, Tuple]) -> None:
-        if deduction[0] == "Previdencia oficial":
-            self.register_official_pension(deduction[1][0], deduction[1][1])
-        elif deduction[0] == "Dependende":
-            for name in deduction[1]:
-                self.register_dependent(name)
-        elif deduction[0] == "Pensão alimenticia":
-            for value in deduction[1]:
-                self.register_food_pension(value)
-        elif deduction[0] == "Outras deducoes":
-            self.register_other_deductions(deduction[1][0], deduction[1][1])
+        method = self.select_deduction_method(deduction[0])
+        method(deduction[1])
+
+    def select_deduction_method(self, deduction_type):
+        possible_methods = {
+            "Previdencia oficial": self.register_official_pension,
+            "Dependende": self.loop_over_dependents,
+            "Pensão alimenticia": self.loop_over_food_pensions,
+            "Outras deducoes": self.register_other_deductions
+        }
+        return possible_methods[deduction_type]
 
     @property
     def declared_incomes(self) -> List[Income]:
@@ -133,12 +134,18 @@ class IRRF:
     def get_calculation_base_range(self, year: int) -> List[BaseRange]:
         return self._calculation_base_ranges[year]
 
-    def register_official_pension(self, description: str, value: float) -> None:
+    def register_official_pension(self, deduction_tuple: Tuple[str, float]) -> None:
+        description = deduction_tuple[0]
+        value = deduction_tuple[1]
         self._declared_deductions.append(Deduction(type="Previdencia oficial", description=description, value=value))
         self._official_pension_total_value += value
 
     def get_total_official_pension(self) -> float:
         return self._official_pension_total_value
+
+    def loop_over_dependents(self, names) -> None:
+        for name in names:
+            self.register_dependent(name)
 
     def register_dependent(self, name: str) -> None:
        self._declared_deductions.append(Deduction(type="Dependente", description="Dependente", value=189.59, name=name))
@@ -147,6 +154,10 @@ class IRRF:
     def get_total_dependent_deductions(self) -> float:
         return self._dependent_deductions
 
+    def loop_over_food_pensions(self, values) -> None:
+        for value in values:
+            self.register_food_pension(value)
+
     def register_food_pension(self, value: float) -> None:
         self._declared_deductions.append(Deduction(type="Pensão alimenticia", description="Pensao alimenticia", value=value))
         self._food_pension += value
@@ -154,7 +165,9 @@ class IRRF:
     def get_total_food_pension(self) -> float:
         return self._food_pension
 
-    def register_other_deductions(self, description: str, value: float) -> None:
+    def register_other_deductions(self, deduction_tuple: Tuple[str, float]) -> None:
+        description = deduction_tuple[0]
+        value = deduction_tuple[1]
         self._declared_deductions.append(Deduction(type='Outras deducoes', description=description, value=value))
         self._other_deductions_value += value
 

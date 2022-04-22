@@ -16,7 +16,8 @@ class TestDeduction(unittest.TestCase):
         ('Carne INSS 2', 200.0)
     ])
     def test_register_official_pension(self, description, value):
-        self.irrf.register_official_pension(description, value)
+        deduction_tuple = (description, value)
+        self.irrf.register_official_pension(deduction_tuple)
         self.assertEqual(self.irrf.get_total_official_pension(), value)
 
     @parameterized.expand([
@@ -82,7 +83,7 @@ class TestDeduction(unittest.TestCase):
     ])
     def test_other_deductions(self, objects, expect):
         for object in objects:
-            self.irrf.register_other_deductions(object[0], object[1])
+            self.irrf.register_other_deductions(object)
 
         self.assertEqual(self.irrf.get_other_deductions(), expect)
 
