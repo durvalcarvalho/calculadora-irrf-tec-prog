@@ -33,6 +33,7 @@ class Income:
     def __lt__(self, other):
         return self.value < other.value
 
+
 @total_ordering
 class Deduction:
     def __init__(self, type: str, description: str, value: float, name: str='') -> None:
@@ -60,6 +61,7 @@ class Deduction:
     def __gt__(self, other):
         return self.value > other.value
 
+
 @total_ordering
 class BaseRange:
     def __init__(self, min: int, max: int, tax: float):
@@ -77,25 +79,9 @@ class BaseRange:
     def __lt__(self, other):
         return round(self.min, 2) < round(other.min, 2)
 
+
 class IRRF:
     DEPENDENT_DEDUCTION = 189.59
-
-    TAX_EXEMPT_VALUE = 1903.99
-    FIRST_TAX_STEP = 2826.66
-    SECOND_TAX_STEP = 3751.06
-    THIRD_TAX_STEP = 4664.69
-
-    FIRST_ALIQUOT = 7.5 / 100
-    SECOND_ALIQUOT = 15 / 100
-    THIRD_ALIQUOT = 22.5 / 100
-    FOURTH_ALIQUOT = 27.5 / 100
-
-    EXEMPT_VALUE = 142.80
-    FIRST_RANGE_EXEMPT_VALUE = 354.80
-    SECOND_RANGE_EXEMPT_VALUE = 636.13
-    THIRD_RANGE_EXEMPT_VALUE = 869.36
-
-
 
     def __init__(self) -> None:
         self._declared_incomes: List[Income] = []
@@ -136,49 +122,8 @@ class IRRF:
     def declared_incomes(self, value: List[Income]) -> None:
         raise RuntimeError("It is not allowed to change the list of declared income")
 
-    def is_within_the_first_range(self, value: float) -> bool:
-        return IRRF.TAX_EXEMPT_VALUE <= value < IRRF.FIRST_TAX_STEP
-
-    def is_within_the_second_range(self, value: float) -> bool:
-        return IRRF.FIRST_TAX_STEP <= value < IRRF.SECOND_TAX_STEP
-
-    def is_within_the_third_range(self, value: float) -> bool:
-        return IRRF.SECOND_TAX_STEP <= value < IRRF.THIRD_TAX_STEP
-
-    def calculate_tax_within_the_first_range(self, value: float) -> float:
-        return value * IRRF.FIRST_ALIQUOT - IRRF.EXEMPT_VALUE
-
-    def calculate_tax_with_the_second_range(self, value: float) -> float:
-        return value * IRRF.SECOND_ALIQUOT - IRRF.FIRST_RANGE_EXEMPT_VALUE
-
-    def calculate_tax_with_the_third_range(self, value: float) -> float:
-        return value * IRRF.THIRD_ALIQUOT - IRRF.SECOND_RANGE_EXEMPT_VALUE
-
-    def calculate_tax_with_the_fourth_range(self, value: float) -> float:
-        return value * IRRF.FOURTH_ALIQUOT - IRRF.THIRD_RANGE_EXEMPT_VALUE
-
-    def calculate_tax(self) -> float:
-        calculation_basis = self.calculation_basis
-
-        if calculation_basis < IRRF.TAX_EXEMPT_VALUE:
-            tax = 0
-
-        elif self.is_within_the_first_range(calculation_basis):
-            tax = self.calculate_tax_within_the_first_range(calculation_basis)
-
-        elif self.is_within_the_second_range(calculation_basis):
-            tax = self.calculate_tax_with_the_second_range(calculation_basis)
-
-        elif self.is_within_the_third_range(calculation_basis):
-            tax = self.calculate_tax_with_the_third_range(calculation_basis)
-
-        elif IRRF.SECOND_TAX_STEP <= calculation_basis < IRRF.THIRD_TAX_STEP:
-            tax = self.calculate_tax_with_the_third_range(calculation_basis)
-
-        else:
-            tax = self.calculate_tax_with_the_fourth_range(calculation_basis)
-
-        return round(tax, 2)
+    def get_tax(self):
+        return CalculateTax(self).compute()
 
     def register_calculation_base_range(self, year: int, table: List[BaseRange]) -> None:
         self._calculation_base_ranges[year] = table
@@ -255,6 +200,62 @@ class IRRF:
 
     @property
     def effective_rate(self) -> float:
-        tax = self.calculate_tax()
+        tax = self.get_tax()
         effective_rate = (tax / self.total_income) * 100
         return round(effective_rate, 2)
+
+
+class CalculateTax:
+    TAX_EXEMPT_VALUE = 1903.99
+    FIRST_TAX_STEP = 2826.66
+    SECOND_TAX_STEP = 3751.06
+    THIRD_TAX_STEP = 4664.69
+
+    FIRST_ALIQUOT = 7.5 / 100
+    SECOND_ALIQUOT = 15 / 100
+    THIRD_ALIQUOT = 22.5 / 100
+    FOURTH_ALIQUOT = 27.5 / 100
+
+    EXEMPT_VALUE = 142.80
+    FIRST_RANGE_EXEMPT_VALUE = 354.80
+    SECOND_RANGE_EXEMPT_VALUE = 636.13
+    THIRD_RANGE_EXEMPT_VALUE = 869.36
+
+    def __init__(self, irrf: IRRF) -> None:
+        self._irrf = irrf
+        self.tax = 0.0
+
+    def is_within_the_first_range(self) -> bool:
+        return CalculateTax.TAX_EXEMPT_VALUE <= self._irrf.calculation_basis < CalculateTax.FIRST_TAX_STEP
+
+    def is_within_the_second_range(self) -> bool:
+        return CalculateTax.FIRST_TAX_STEP <= self._irrf.calculation_basis < CalculateTax.SECOND_TAX_STEP
+
+    def is_within_the_third_range(self) -> bool:
+        return CalculateTax.SECOND_TAX_STEP <= self._irrf.calculation_basis < CalculateTax.THIRD_TAX_STEP
+
+    def calculate_tax_within_the_first_range(self) -> float:
+        return self._irrf.calculation_basis * CalculateTax.FIRST_ALIQUOT - CalculateTax.EXEMPT_VALUE
+
+    def calculate_tax_with_the_second_range(self) -> float:
+        return self._irrf.calculation_basis * CalculateTax.SECOND_ALIQUOT - CalculateTax.FIRST_RANGE_EXEMPT_VALUE
+
+    def calculate_tax_with_the_third_range(self) -> float:
+        return self._irrf.calculation_basis * CalculateTax.THIRD_ALIQUOT - CalculateTax.SECOND_RANGE_EXEMPT_VALUE
+
+    def calculate_tax_with_the_fourth_range(self) -> float:
+        return self._irrf.calculation_basis * CalculateTax.FOURTH_ALIQUOT - CalculateTax.THIRD_RANGE_EXEMPT_VALUE
+
+    def compute(self):
+        if self._irrf.calculation_basis < CalculateTax.TAX_EXEMPT_VALUE:
+            self.tax = 0
+        elif self.is_within_the_first_range():
+            self.tax = self.calculate_tax_within_the_first_range()
+        elif self.is_within_the_second_range():
+            self.tax = self.calculate_tax_with_the_second_range()
+        elif self.is_within_the_third_range():
+            self.tax = self.calculate_tax_with_the_third_range()
+        else:
+            self.tax = self.calculate_tax_with_the_fourth_range()
+
+        return round(self.tax, 2)
