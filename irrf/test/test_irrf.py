@@ -245,7 +245,7 @@ class IRRFTestCase(unittest.TestCase):
         for deduction in deduction_list:
             self.irrf.register_deduction(deduction)
 
-        self.assertAlmostEqual(self.irrf.calculate_tax(), expected_tax, delta=0.01)
+        self.assertAlmostEqual(self.irrf.get_tax(), expected_tax, delta=0.01)
 
 
     @parameterized.expand([
