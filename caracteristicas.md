@@ -64,3 +64,43 @@ Além do documento "Zen do Python", a linguagem Python também possui um guia de
 
 
 ### Boa documentação
+
+É comum a crença que um código bem escrito não precisa de documentação, pois somente com o código é possível compreender o que ele faz. Porém, em bases de códigos muito grande não é plausível a leitura da base completa, de todos os subsistemas, módulos, classes e funções. Deste modo é importante que exista um mínimo de documentação que possibilite a rápida compreensão do que cada componente de código faz.
+
+Na linguagem python este tipo de documentação é denominada docstrings. As docstrings são strings especiais que são utilizadas no início dos módulos, classes, funções e métodos, com a finalidade de apresentar um rápido resumo do que o código faz. Nos módulos é apresentado uma descrição do que aquele módulo agrupa, nas classes é apresentado uma descrição da abstração que a classe faz, e suas principais funcionalidade. E nos métodos e funções é apresentado um resumo da função, assim como o parâmetros de entrada e o retorno da função.
+
+Algumas convenções usadas nas docstrings são:
+
+* A primeira linha deve sempre ser uma breve descrição, geralmente de somente uma frase, com o resumo da docstring.
+
+* Se houver a necessidade de uma explicação mais detalhada, a segunda linha deve sempre ser em branco, e a explicação deve começar a partir da terceira linha.
+
+* Se houver a necessidade de documentar os parâmetros, é sugerido que a documentação seja da seguinte forma:
+
+```
+def function_with_types_in_docstring(param1, param2):
+    """
+    Example function with types documented in the docstring. (Curto resumo)
+
+    (Descrição longa)
+    `PEP 484`_ type annotations are supported. If attribute, parameter, and
+    return types are annotated according to `PEP 484`_, they do not need to be
+    included in the docstring:
+
+    (Documentação dos argumentos)
+    Args:
+        param1 (int): The first parameter.
+        param2 (str): The second parameter.
+
+    (Documentação do retorno)
+    Returns:
+        bool: The return value. True for success, False otherwise.
+
+    (Outras informações)
+    .. _PEP 484:
+        https://www.python.org/dev/peps/pep-0484/
+
+    """
+```
+
+Essa característica vai de encontro com o codesmell de excesso de documentários. Porém, como esses comentários não são documentários de rotinas de código, e sim documentação de projeto, é desejável que uma base de código seja bem documentada, ainda mais quando os padrões de documentação são respeitados.

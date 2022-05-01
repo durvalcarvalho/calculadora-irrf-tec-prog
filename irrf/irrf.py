@@ -1,3 +1,12 @@
+"""
+Módulo que implementa as classes:
+* `Income`: Dataclass que agrupa os dados de um recebimento.
+* `Deduction`: Dataclass que agrupa os dados de uma dedução.
+* `BaseRange`: Dataclass que agrupa os valores de um intervalo de base.
+* `IRRF`: Classe agrupa as rotinas necessárias para calcular o IRRF.
+* `CalculateTax`: Classe que abstrai o cálculo do IRRF.
+"""
+
 import numbers
 from typing import Dict, List, Tuple
 
@@ -13,6 +22,9 @@ from functools import total_ordering
 
 @total_ordering
 class Income:
+    """
+    Dataclasse que agrupa os dados de um recebimento.
+    """
     def __init__(self, value: int, description: str):
         if not isinstance(value, numbers.Number) or value <= 0:
             raise ValorRendimentoInvalidoException(
@@ -39,6 +51,9 @@ class Income:
 
 @total_ordering
 class Deduction:
+    """
+    Dataclasse que agrupa os valores de uma dedução.
+    """
     def __init__(
         self,
         type: str,
@@ -78,6 +93,9 @@ class Deduction:
 
 @total_ordering
 class BaseRange:
+    """
+    Dataclasse que abstrai um intervalo de base.
+    """
     def __init__(self, min: int, max: int, tax: float):
         self.min = min
         self.max = max
@@ -95,6 +113,10 @@ class BaseRange:
 
 
 class IRRF:
+    """
+    Classe que agrupa as rotinas necessárias para calcular o IRRF.
+    """
+
     DEPENDENT_DEDUCTION = 189.59
 
     def __init__(self) -> None:
@@ -235,6 +257,11 @@ class IRRF:
 
 
 class CalculateTax:
+    """
+    Classe que agrupa as rotinas necessárias para
+    calcular o imposto nas várias faixas de base.
+    """
+
     TAX_EXEMPT_VALUE = 1903.99
     FIRST_TAX_STEP = 2826.66
     SECOND_TAX_STEP = 3751.06
@@ -255,41 +282,65 @@ class CalculateTax:
         self.tax = 0.0
 
     def is_within_the_first_range(self) -> bool:
+        """
+        Verifica se o valor da base de cálculo está dentro da primeira faixa.
+        """
         lower_bound = CalculateTax.TAX_EXEMPT_VALUE
         upper_bound = CalculateTax.FIRST_TAX_STEP
         return lower_bound <= self._irrf.calculation_basis < upper_bound
 
     def is_within_the_second_range(self) -> bool:
+        """
+        Verifica se o valor da base de cálculo está dentro da segunda faixa.
+        """
         lower_bound = CalculateTax.FIRST_TAX_STEP
         upper_bound = CalculateTax.SECOND_TAX_STEP
         return lower_bound <= self._irrf.calculation_basis < upper_bound
 
     def is_within_the_third_range(self) -> bool:
+        """
+        Verifica se o valor da base de cálculo está dentro da terceira faixa.
+        """
         lower_bound = CalculateTax.SECOND_TAX_STEP
         upper_bound = CalculateTax.THIRD_TAX_STEP
         return lower_bound <= self._irrf.calculation_basis < upper_bound
 
     def calculate_tax_within_the_first_range(self) -> float:
+        """
+        Calcula o imposto dentro da primeira faixa.
+        """
         aliquot = CalculateTax.FIRST_ALIQUOT
         exempt_value = CalculateTax.EXEMPT_VALUE
         return self._irrf.calculation_basis * aliquot - exempt_value
 
     def calculate_tax_with_the_second_range(self) -> float:
+        """
+        Calcula o imposto dentro da segunda faixa.
+        """
         aliquot = CalculateTax.SECOND_ALIQUOT
         exempt_value = CalculateTax.FIRST_RANGE_EXEMPT_VALUE
         return self._irrf.calculation_basis * aliquot - exempt_value
 
     def calculate_tax_with_the_third_range(self) -> float:
+        """
+        Calcula o imposto dentro da terceira faixa.
+        """
         aliquot = CalculateTax.THIRD_ALIQUOT
         exempt_value = CalculateTax.SECOND_RANGE_EXEMPT_VALUE
         return self._irrf.calculation_basis * aliquot - exempt_value
 
     def calculate_tax_with_the_fourth_range(self) -> float:
+        """
+        Calcula o imposto dentro da quarta faixa.
+        """
         aliquot = CalculateTax.FOURTH_ALIQUOT
         exempt_value = CalculateTax.THIRD_RANGE_EXEMPT_VALUE
         return self._irrf.calculation_basis * aliquot - exempt_value
 
     def compute(self):
+        """
+        Computa o imposto de acordo com a faixa base
+        """
         if self._irrf.calculation_basis < CalculateTax.TAX_EXEMPT_VALUE:
             self.tax = 0
 
