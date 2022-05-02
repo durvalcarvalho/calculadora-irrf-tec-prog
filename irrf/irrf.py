@@ -19,6 +19,12 @@ from exceptions import (
 
 from functools import total_ordering
 
+ZERO = 0.0
+
+VALUE_EXCEPTION_TEXT = lambda type, value: \
+    f'The {type} value must be a positive number, got {value}'
+NULL_EXCEPTION_TEXT = lambda type: \
+    f'The {type} description must be filled'
 
 @total_ordering
 class Income:
@@ -28,12 +34,12 @@ class Income:
     def __init__(self, value: int, description: str):
         if not isinstance(value, numbers.Number) or value <= 0:
             raise ValorRendimentoInvalidoException(
-                f'The income value must be a positive number, got {value}'
+                VALUE_EXCEPTION_TEXT('income', value)
             )
 
         if not description.strip():
             raise DescricaoEmBrancoException(
-                'The income description must be filled'
+                NULL_EXCEPTION_TEXT('income')
             )
 
         self.value = value
@@ -63,12 +69,12 @@ class Deduction:
     ) -> None:
         if not isinstance(value, numbers.Number) or value <= 0:
             raise ValorDeducaoInvalidoException(
-                f'The deduction value must be a positive number, got {value}'
+                VALUE_EXCEPTION_TEXT('deduction', value)
             )
 
         if not description:
             raise DescricaoEmBrancoException(
-                'The deduction description must be filled'
+                NULL_EXCEPTION_TEXT('deduction')
             )
 
         if type == "Dependente" and not name:
@@ -124,11 +130,11 @@ class IRRF:
         self._calculation_base_ranges: Dict[int, List[BaseRange]] = {}
         self._declared_deductions: List[Deduction] = []
 
-        self.total_income: float = 0
-        self._official_pension_total_value = 0.0
-        self._dependent_deductions = 0.0
-        self._food_pension = 0.0
-        self._other_deductions_value = 0.0
+        self.total_income: float = ZERO
+        self._official_pension_total_value = ZERO
+        self._dependent_deductions = ZERO
+        self._food_pension = ZERO
+        self._other_deductions_value = ZERO
 
     def register_income(self, value: float, description: str) -> None:
         self.total_income += value
@@ -281,79 +287,52 @@ class CalculateTax:
         self._irrf = irrf
         self.tax = 0.0
 
-    def is_within_the_first_range(self) -> bool:
+    def is_within_range(self, lower: float, upper: float) -> bool:
         """
-        Verifica se o valor da base de cálculo está dentro da primeira faixa.
+        Verifica se o valor está dentro ou não de uma determinada faixa.
         """
-        lower_bound = CalculateTax.TAX_EXEMPT_VALUE
-        upper_bound = CalculateTax.FIRST_TAX_STEP
+        lower_bound = lower
+        upper_bound = upper
         return lower_bound <= self._irrf.calculation_basis < upper_bound
 
-    def is_within_the_second_range(self) -> bool:
+    def calculate_tax(self, aliquot: float, exempt_value: float) -> float:
         """
-        Verifica se o valor da base de cálculo está dentro da segunda faixa.
+        Calcula o imposto de renda a partir da faixa definida
         """
-        lower_bound = CalculateTax.FIRST_TAX_STEP
-        upper_bound = CalculateTax.SECOND_TAX_STEP
-        return lower_bound <= self._irrf.calculation_basis < upper_bound
-
-    def is_within_the_third_range(self) -> bool:
-        """
-        Verifica se o valor da base de cálculo está dentro da terceira faixa.
-        """
-        lower_bound = CalculateTax.SECOND_TAX_STEP
-        upper_bound = CalculateTax.THIRD_TAX_STEP
-        return lower_bound <= self._irrf.calculation_basis < upper_bound
-
-    def calculate_tax_within_the_first_range(self) -> float:
-        """
-        Calcula o imposto dentro da primeira faixa.
-        """
-        aliquot = CalculateTax.FIRST_ALIQUOT
-        exempt_value = CalculateTax.EXEMPT_VALUE
-        return self._irrf.calculation_basis * aliquot - exempt_value
-
-    def calculate_tax_with_the_second_range(self) -> float:
-        """
-        Calcula o imposto dentro da segunda faixa.
-        """
-        aliquot = CalculateTax.SECOND_ALIQUOT
-        exempt_value = CalculateTax.FIRST_RANGE_EXEMPT_VALUE
-        return self._irrf.calculation_basis * aliquot - exempt_value
-
-    def calculate_tax_with_the_third_range(self) -> float:
-        """
-        Calcula o imposto dentro da terceira faixa.
-        """
-        aliquot = CalculateTax.THIRD_ALIQUOT
-        exempt_value = CalculateTax.SECOND_RANGE_EXEMPT_VALUE
-        return self._irrf.calculation_basis * aliquot - exempt_value
-
-    def calculate_tax_with_the_fourth_range(self) -> float:
-        """
-        Calcula o imposto dentro da quarta faixa.
-        """
-        aliquot = CalculateTax.FOURTH_ALIQUOT
-        exempt_value = CalculateTax.THIRD_RANGE_EXEMPT_VALUE
         return self._irrf.calculation_basis * aliquot - exempt_value
 
     def compute(self):
         """
         Computa o imposto de acordo com a faixa base
         """
+        aliquot = ZERO
+        exempt_value = ZERO
+
         if self._irrf.calculation_basis < CalculateTax.TAX_EXEMPT_VALUE:
             self.tax = 0
 
-        elif self.is_within_the_first_range():
-            self.tax = self.calculate_tax_within_the_first_range()
+        elif self.is_within_range(
+            CalculateTax.TAX_EXEMPT_VALUE,
+            CalculateTax.FIRST_TAX_STEP):
+            aliquot = CalculateTax.FIRST_ALIQUOT
+            exempt_value = CalculateTax.EXEMPT_VALUE
 
-        elif self.is_within_the_second_range():
-            self.tax = self.calculate_tax_with_the_second_range()
+        elif self.is_within_range(
+            CalculateTax.FIRST_TAX_STEP,
+            CalculateTax.SECOND_TAX_STEP):
+            aliquot = CalculateTax.SECOND_ALIQUOT
+            exempt_value = CalculateTax.FIRST_RANGE_EXEMPT_VALUE
 
-        elif self.is_within_the_third_range():
-            self.tax = self.calculate_tax_with_the_third_range()
+        elif self.is_within_range(
+            CalculateTax.SECOND_TAX_STEP,
+            CalculateTax.THIRD_TAX_STEP):
+            aliquot = CalculateTax.THIRD_ALIQUOT
+            exempt_value = CalculateTax.SECOND_RANGE_EXEMPT_VALUE
 
         else:
-            self.tax = self.calculate_tax_with_the_fourth_range()
+            aliquot = CalculateTax.FOURTH_ALIQUOT
+            exempt_value = CalculateTax.THIRD_RANGE_EXEMPT_VALUE
+
+        self.tax = self.calculate_tax(aliquot, exempt_value)
 
         return round(self.tax, 2)

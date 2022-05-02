@@ -12,6 +12,19 @@
 
 ### Ausência de duplicidades
 
+Antes de entrar na descrição formal da **Ausência de duplicidades**, vale o destaque para um pequeno lema que descreve a ideia central da característica:
+
+> *Faça apenas uma vez e faça bem. Evite duplicações.*
+
+Um código bem projetado não possui duplicações de código, isto é, ele nunca repete a si mesmo em diferentes partes. A duplicação de código é a maior inimiga de um projeto de software simples e elegante. Um código desnecessariamente redundante traz consigo um crítico problema: dado dois trechos de código semelhantes, diferenciados apenas por detalhes, que apresentam um mesmo bug, é comum que desenvolvedores ajustem o bug apenas em um dos trechos de código e esqueçam do outro. Tal problemática se mostra como um obstáculo sólido à saúde de um código.
+
+Boa parte da duplicação de código é proveniente de programações oriundas da técnica de *copiar e colar*, isto é, a partir de editores de texto, copiar trechos de código e colar em outras partes do sistema. A duplicação também pode surgir de projetos de software desnecessariamente complexos e que, por falta de conhecimento ou domínio do conteúdo por parte dos programadores responsáveis, acabam replicando o código diversas e diversas vezes.
+
+Evitar a duplicação de código é uma atividade que sempre deve estar presente no desenvolvimento de software. Para tal, existem algumas recomendações que podem ajudar a conquistar um código objetivo e sem replicações:
+
+* Caso seja notado trechos muito parecidos e que estão em diferentes partes do código, é recomendável que seja criada uma função de generalização do código. A partir da definição apropriada dos parâmetros, é possível condessar a lógica em apenas um trecho de código, além da responsabilidade única, agora a correção de erros também se concentra em apenas um local. Além do mais, a legibilidade do código é melhorada, já que agora é possível criar um nome significativo e que consiga descrever a etapa específica do código.
+* Um sinal de duplicação de código são classes excessivamente similares. Tal ocasião é um indicativo de que alguma funcionalidade deveria estar em uma classe pai, ou até mesmo que uma camada de interface seja necessária para descrever o comportamento em comum.
+
 ### Portabilidade
 
 ### Idiomático
