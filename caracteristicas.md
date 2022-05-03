@@ -2,7 +2,7 @@
 
 ### Simplicidade
 
-A **Simplicidade** é a característica mais importante de um código bem escrito. Não só o código como também ter um design simples em qualquer projeto seja mobile, web ou desktop é muito importante para facilitar o entendimento do que está sendo criado para uma outra pesssoa.
+A **Simplicidade** é a característica mais importante de um código bem escrito. Não só o código como também ter um design simples em qualquer projeto seja mobile, web ou desktop é muito importante para facilitar o entendimento do que está sendo criado para outra pesssoa.
 
 Um código simples não quer dizer que é o menor, mas é o menor possível considerando a tecnologia, linguagem e bibliotecas utilizadas na construção do projeto.
 
@@ -10,7 +10,7 @@ Certa vez, Pascal disse:
 
 > Sinto muito pela extensão da minha carta, mas não tive tempo de escrever uma curta.
 
-Ou seja, fazer um código pequeno exige que o desenvolvedor esteja engajuado nesse propósito, porque tanto o exagero de simplicidade quanto a ausência de simplicidade podem ser prejudiciais para a compreensão do projeto.
+Ou seja, fazer um código pequeno exige que o desenvolvedor esteja engajado nesse propósito, porque tanto o exagero de simplicidade quanto a ausência de simplicidade podem ser prejudiciais para a compreensão do projeto.
 
 Para se alcançar um código simples é necessário evitar:
 
@@ -21,6 +21,8 @@ Para se alcançar um código simples é necessário evitar:
 
 Evitar esses maus-cheiros são essenciais para uma boa escrita de código, assim como _Martin Fowler_ define os maus-cheiros.
 
+A refatoração realizada pode ser encontrada em: [Simplicidade](https://github.com/durvalcarvalho/calculadora-irrf-tec-prog/commit/8a85e683a6b14fa57cb6cd1f03f72ea59bd2573c)
+
 ### Modularidade
 
 Desde a criação de um projeto é necessário dividir em partes chamadas módulos ou componentes da aplicação. O ideal é ir quebrando o projeto em partes cada vez menores até um ponto que seja saudável para o projeto.
@@ -29,14 +31,14 @@ Sempre é bom lembrar que mesmo que se separe o projeto em partes, todas elas s�
 
 As chaves para uma boa modularidade são:
 
-* Alta coesão, ou seja ter funcionalidades que sejam bem relacionadas entre elas;
+* Alta coesão, ou seja, ter funcionalidades que sejam bem relacionadas entre elas;
 * Baixo acoplamento, que significa a interdependência entre os módulos.
 
 Sempre que um módulo for devidamente identificado ele pode ser trabalhado e testado separadamente. Uma das vantagens da modularidade é a possibilidade de criação de testes unitários para qualidade do projeto.
 
 Além disso, um projeto modularizado pode permitir a divisão de tarefas entre desenvolvedores, mas sempre tomando cuidado com a criação de etapas diferentes dentro da aplicação como um todo.
 
-O importante é que a modularização seja equilibrada e baseada na solução do problema e não em elementos periféricos e externos a aplicação.
+O importante é que a modularização seja equilibrada e baseada na solução do problema e não em elementos periféricos e externos à aplicação.
 
 Um código bem modularizado, evita:
 
@@ -45,15 +47,17 @@ Um código bem modularizado, evita:
 * O uso de instruções como um switch.
 * Generalidade especulativa.
 
+A refatoração realizada pode ser encontrada em: [Modularidade](https://github.com/durvalcarvalho/calculadora-irrf-tec-prog/commit/f14fd41fef85aeec39fda9996e51f62d4399b11d)
+
 ### Extensibilidade
 
-Um dos principais príncipios da extensibilidade é ter um código bem projetado que permite a criação de novas funcionalidades em arquivos e pastas apropriados. Um dos perigos é a criação de diversos ramos que gerem uma estrutura extremamente complexa, e que complica qualquer alteração ou manuntenção no futuro.
+Um dos principais princípios da extensibilidade é ter um código bem projetado que permite a criação de novas funcionalidades em arquivos e pastas apropriados. Um dos perigos é a criação de diversos ramos que gerem uma estrutura extremamente complexa, e que complica qualquer alteração ou manutenção no futuro.
 
 A extensibilidade pode ser feita através da criação da hierarquia de classes, classes abstratas, com o fornecimento de funções de retorno de atributos de uma classe e com uma estrutura de pastas e arquivos que seja lógica e maleável para a aplicação.
 
 Um ponto de atenção é a importância de não tentar ser extensível com todo o código para não criar algo mais complexo do que de fato é.
 
-Ao estender o código é importante pensar em algo que seja escalável, ou seja, que funcioone para as funcionalidades de agora e para as que serão criadas futuramente.
+Ao estender o código é importante pensar em algo que seja escalável, ou seja, que funcione para as funcionalidades de agora e para as que serão criadas futuramente.
 
 Quando for necessário acrescentar alguma funcionalidade em um código extensível, deve ser:
 
@@ -61,6 +65,8 @@ Quando for necessário acrescentar alguma funcionalidade em um código extensív
 * Pontual;
 * Não deve precisar que o desenvolvedor altere em diversos lugares causando uma mudança divergente.
 * Não deve ser necessário buscar muitos atributos de outras classes que poderiam não ter sido criadas para a plena criação da funcionalidade.
+
+A refatoração realizada pode ser encontrada em: [Extensibilidade](https://github.com/durvalcarvalho/calculadora-irrf-tec-prog/commit/f14fd41fef85aeec39fda9996e51f62d4399b11d)
 
 ### Ausência de duplicidades
 
@@ -77,6 +83,8 @@ Evitar a duplicação de código é uma atividade que sempre deve estar presente
 * Caso seja notado trechos muito parecidos e que estão em diferentes partes do código, é recomendável que seja criada uma função de generalização do código. A partir da definição apropriada dos parâmetros, é possível condessar a lógica em apenas um trecho de código, além da responsabilidade única, agora a correção de erros também se concentra em apenas um local. Além do mais, a legibilidade do código é melhorada, já que agora é possível criar um nome significativo e que consiga descrever a etapa específica do código.
 * Um sinal de duplicação de código são classes excessivamente similares. Tal ocasião é um indicativo de que alguma funcionalidade deveria estar em uma classe pai, ou até mesmo que uma camada de interface seja necessária para descrever o comportamento em comum.
 
+A refatoração realizada pode ser encontrada em: [Ausência de duplicidades](https://github.com/durvalcarvalho/calculadora-irrf-tec-prog/commit/c461e5d578cf0459a1f3d87434b252477ee00b21)
+
 ### Idiomático
 
 Uma base de código idiomática é um código que parece natural e fluente aos usuários que conhecem as capacidades, características e convençôes da linguagem. Por exemplo, um código idiomático jamais irá reimplementar rotinas já existêntes na linguagem, e sim, utilizar as APIs já existentes para realizar tais tarefas.
@@ -90,7 +98,7 @@ Para a base de código deste trabalho, foi utilizado a linguagem de programaçã
 * Plano é melhor que aninhado
 * Esparso é melhor que denso
 * Ligibilidade conta
-* Casos especiais não são especiais o bastantes para quebrar regras
+* Casos especiais não são especiais o bastante para quebrar regras
 * Praticidade é melhor que pureza
 * Erros nunca devem passar silenciosamente.
 * Erros somente podem passar silenciosamente se forem explicitamente silenciados.
@@ -124,9 +132,11 @@ Além do documento "Zen do Python", a linguagem Python também possui um guia de
 
 * Inconsistency e Espaçamento, Identação e Codificação de caracteres: A linguagem pytho é clara quando define a quantidade de espaços que devem ser utilizados para identação, e a codificação de caracteres é sempre UTF-8. Deste modo, se em uma mesma base de código há trechos que são inconsistentes entre si quando analisamos na lente de espaçamento, identação e codificação de caracteres, é um sinal de mau cheiro de código.
 
+A refatoração realizada pode ser encontrada em: [Idiomático](https://github.com/durvalcarvalho/calculadora-irrf-tec-prog/commit/556ec0b14a6f758f1641643b467e2a034992feb5)
+
 ### Boa documentação
 
-É comum a crença que um código bem escrito não precisa de documentação, pois somente com o código é possível compreender o que ele faz. Porém, em bases de códigos muito grande não é plausível a leitura da base completa, de todos os subsistemas, módulos, classes e funções. Deste modo é importante que exista um mínimo de documentação que possibilite a rápida compreensão do que cada componente de código faz.
+É comum a crença que um código bem escrito não precisa de documentação, pois somente com o código é possível compreender o que ele faz. Porém, em bases de códigos muito grandes não é plausível a leitura da base completa, de todos os subsistemas, módulos, classes e funções. Deste modo é importante que exista um mínimo de documentação que possibilite a rápida compreensão do que cada componente de código faz.
 
 Na linguagem python este tipo de documentação é denominada docstrings. As docstrings são strings especiais que são utilizadas no início dos módulos, classes, funções e métodos, com a finalidade de apresentar um rápido resumo do que o código faz. Nos módulos é apresentado uma descrição do que aquele módulo agrupa, nas classes é apresentado uma descrição da abstração que a classe faz, e suas principais funcionalidade. E nos métodos e funções é apresentado um resumo da função, assim como o parâmetros de entrada e o retorno da função.
 
@@ -165,3 +175,5 @@ def function_with_types_in_docstring(param1, param2):
 ```
 
 Essa característica vai de encontro com o codesmell de excesso de documentários. Porém, como esses comentários não são documentários de rotinas de código, e sim documentação de projeto, é desejável que uma base de código seja bem documentada, ainda mais quando os padrões de documentação são respeitados.
+
+A refatoração realizada pode ser encontrada em: [Boa Documentação](https://github.com/durvalcarvalho/calculadora-irrf-tec-prog/commit/5bad69420a0476fa78fbcd77fac631dd507d12fe)
