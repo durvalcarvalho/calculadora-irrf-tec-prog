@@ -2,13 +2,15 @@ from typing import Tuple
 import unittest
 from parameterized import parameterized
 
-from irrf import IRRF, Income, BaseRange
+from irrf import IRRF, BaseRange
+from income import Incomes, Income
+from deduction import Deductions
 
 
 class IRRFTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.irrf = IRRF()
+        self.irrf = IRRF(Incomes(), Deductions())
 
     @parameterized.expand([
         [ Income(value=1000, description='Weekly salary'), ],
@@ -16,11 +18,11 @@ class IRRFTestCase(unittest.TestCase):
         [ Income(value=1500, description='Rent income'),  ],
     ])
     def test_register_income_1(self, income: Income):
-        self.irrf.register_income(
+        self.irrf._incomes.register_income(
             value=income.value,
             description=income.description,
         )
-        self.assertEqual(self.irrf.total_income, income.value)
+        self.assertEqual(self.irrf._incomes.total_income, income.value)
 
     @parameterized.expand([
         [[
@@ -43,12 +45,12 @@ class IRRFTestCase(unittest.TestCase):
         for income in income_list:
             total_income += income.value
 
-            self.irrf.register_income(
+            self.irrf._incomes.register_income(
                 value=income.value,
                 description=income.description,
             )
 
-        self.assertEqual(self.irrf.total_income, total_income)
+        self.assertEqual(self.irrf._incomes.total_income, total_income)
 
     @parameterized.expand([
         [[
@@ -64,12 +66,12 @@ class IRRFTestCase(unittest.TestCase):
     def test_get_all_income_already_declared(self, income_list: Tuple[Income]):
         income: Income
         for income in income_list:
-            self.irrf.register_income(income.value, income.description)
+            self.irrf._incomes.register_income(income.value, income.description)
 
         # Here I convert to a list to be able to compare the values,
         # regardless of the data type
         self.assertEqual(
-            list(self.irrf.declared_incomes),
+            list(self.irrf._incomes.declared_incomes),
             list(income_list),
         )
     
@@ -92,9 +94,9 @@ class IRRFTestCase(unittest.TestCase):
     ])
     def test_get_all_deductions(self, deductions_list, expected_deduction):
         for deduction in deductions_list:
-            self.irrf.register_deduction(deduction)
+            self.irrf._deductions.register_deduction(deduction)
             
-        self.assertAlmostEqual(self.irrf.all_deductions, expected_deduction, delta=0.01)
+        self.assertAlmostEqual(self.irrf._deductions.all_deductions, expected_deduction, delta=0.01)
     
     @parameterized.expand([
         [
@@ -125,10 +127,10 @@ class IRRFTestCase(unittest.TestCase):
     def test_get_calculation_basis(self, income_list, deduction_list, expected_result):
         income: Income
         for income in income_list:
-            self.irrf.register_income(income.value, income.description)
+            self.irrf._incomes.register_income(income.value, income.description)
             
         for deduction in deduction_list: 
-            self.irrf.register_deduction(deduction)
+            self.irrf._deductions.register_deduction(deduction)
         
         self.assertEqual(self.irrf.calculation_basis, expected_result)
 
@@ -240,10 +242,10 @@ class IRRFTestCase(unittest.TestCase):
     def test_tax_calculation(self, income_list: Tuple[Income], deduction_list, expected_tax: float):
         income: Income
         for income in income_list:
-            self.irrf.register_income(income.value, income.description)
+            self.irrf._incomes.register_income(income.value, income.description)
             
         for deduction in deduction_list:
-            self.irrf.register_deduction(deduction)
+            self.irrf._deductions.register_deduction(deduction)
 
         self.assertAlmostEqual(self.irrf.get_tax(), expected_tax, delta=0.01)
 
@@ -363,9 +365,9 @@ class IRRFTestCase(unittest.TestCase):
     def test_effective_rate(self, income_list: Tuple[Income], deduction_list, expected_rate: float):
         income: Income
         for income in income_list:
-            self.irrf.register_income(income.value, income.description)
+            self.irrf._incomes.register_income(income.value, income.description)
             
         for deduction in deduction_list:
-            self.irrf.register_deduction(deduction)
+            self.irrf._deductions.register_deduction(deduction)
 
         self.assertAlmostEqual(self.irrf.effective_rate, expected_rate, delta=0.02)

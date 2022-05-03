@@ -1,14 +1,17 @@
 from unicodedata import name
 import unittest
 
-from irrf import IRRF, Deduction
+from irrf import IRRF
+from income import Incomes
+from deduction import Deduction, Deductions
+
 from parameterized import parameterized
 from exceptions import DescricaoEmBrancoException, ValorDeducaoInvalidoException
 
 
 class TestDeduction(unittest.TestCase):
     def setUp(self):
-        self.irrf = IRRF()
+        self.irrf = IRRF(Incomes(), Deductions())
 
     @parameterized.expand([
         ('Contribuicao compulsoria', 1000.0),
@@ -17,8 +20,8 @@ class TestDeduction(unittest.TestCase):
     ])
     def test_register_official_pension(self, description, value):
         deduction_tuple = (description, value)
-        self.irrf.register_official_pension(deduction_tuple)
-        self.assertEqual(self.irrf.get_total_official_pension(), value)
+        self.irrf._deductions.register_official_pension(deduction_tuple)
+        self.assertEqual(self.irrf._deductions.get_total_official_pension(), value)
 
     @parameterized.expand([
         ('', 100.0),
@@ -46,8 +49,8 @@ class TestDeduction(unittest.TestCase):
     ])
     def test_register_dependent(self, names, value):
         for name in names:
-            self.irrf.register_dependent(name)
-        self.assertEqual(self.irrf.get_total_dependent_deductions(), value)
+            self.irrf._deductions.register_dependent(name)
+        self.assertEqual(self.irrf._deductions.get_total_dependent_deductions(), value)
 
     @parameterized.expand([
         (['']),
@@ -64,9 +67,9 @@ class TestDeduction(unittest.TestCase):
     ])
     def test_register_food_pension(self, values, expect):
         for value in values:
-            self.irrf.register_food_pension(value)
+            self.irrf._deductions.register_food_pension(value)
         
-        self.assertEqual(self.irrf.get_total_food_pension(), expect)
+        self.assertEqual(self.irrf._deductions.get_total_food_pension(), expect)
 
 
     @parameterized.expand([
@@ -83,7 +86,7 @@ class TestDeduction(unittest.TestCase):
     ])
     def test_other_deductions(self, objects, expect):
         for object in objects:
-            self.irrf.register_other_deductions(object)
+            self.irrf._deductions.register_other_deductions(object)
 
-        self.assertEqual(self.irrf.get_other_deductions(), expect)
+        self.assertEqual(self.irrf._deductions.get_other_deductions(), expect)
 
