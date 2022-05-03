@@ -2,13 +2,65 @@
 
 ### Simplicidade
 
-### Elegância
+A **Simplicidade** é a característica mais importante de um código bem escrito. Não só o código como também ter um design simples em qualquer projeto seja mobile, web ou desktop é muito importante para facilitar o entendimento do que está sendo criado para uma outra pesssoa.
+
+Um código simples não quer dizer que é o menor, mas é o menor possível considerando a tecnologia, linguagem e bibliotecas utilizadas na construção do projeto.
+
+Certa vez, Pascal disse:
+
+> Sinto muito pela extensão da minha carta, mas não tive tempo de escrever uma curta.
+
+Ou seja, fazer um código pequeno exige que o desenvolvedor esteja engajuado nesse propósito, porque tanto o exagero de simplicidade quanto a ausência de simplicidade podem ser prejudiciais para a compreensão do projeto.
+
+Para se alcançar um código simples é necessário evitar:
+
+* Classes longas;
+* Métodos longos;
+* Parâmetros longos;
+* Duplicação de código. 
+
+Evitar esses maus-cheiros são essenciais para uma boa escrita de código, assim como _Martin Fowler_ define os maus-cheiros.
 
 ### Modularidade
 
-### Boas interfaces
+Desde a criação de um projeto é necessário dividir em partes chamadas módulos ou componentes da aplicação. O ideal é ir quebrando o projeto em partes cada vez menores até um ponto que seja saudável para o projeto.
+
+Sempre é bom lembrar que mesmo que se separe o projeto em partes, todas elas são menos complexas que o problema original, mas juntas resolvem o problema inicial. Buscar uma qualidade dentro dessa quebra por módulos do projeto é bastante importante.
+
+As chaves para uma boa modularidade são:
+
+* Alta coesão, ou seja ter funcionalidades que sejam bem relacionadas entre elas;
+* Baixo acoplamento, que significa a interdependência entre os módulos.
+
+Sempre que um módulo for devidamente identificado ele pode ser trabalhado e testado separadamente. Uma das vantagens da modularidade é a possibilidade de criação de testes unitários para qualidade do projeto.
+
+Além disso, um projeto modularizado pode permitir a divisão de tarefas entre desenvolvedores, mas sempre tomando cuidado com a criação de etapas diferentes dentro da aplicação como um todo.
+
+O importante é que a modularização seja equilibrada e baseada na solução do problema e não em elementos periféricos e externos a aplicação.
+
+Um código bem modularizado, evita:
+
+* A criação de códigos duplicados sem necessidade.
+* A obsessão primitiva.
+* O uso de instruções como um switch.
+* Generalidade especulativa.
 
 ### Extensibilidade
+
+Um dos principais príncipios da extensibilidade é ter um código bem projetado que permite a criação de novas funcionalidades em arquivos e pastas apropriados. Um dos perigos é a criação de diversos ramos que gerem uma estrutura extremamente complexa, e que complica qualquer alteração ou manuntenção no futuro.
+
+A extensibilidade pode ser feita através da criação da hierarquia de classes, classes abstratas, com o fornecimento de funções de retorno de atributos de uma classe e com uma estrutura de pastas e arquivos que seja lógica e maleável para a aplicação.
+
+Um ponto de atenção é a importância de não tentar ser extensível com todo o código para não criar algo mais complexo do que de fato é.
+
+Ao estender o código é importante pensar em algo que seja escalável, ou seja, que funcioone para as funcionalidades de agora e para as que serão criadas futuramente.
+
+Quando for necessário acrescentar alguma funcionalidade em um código extensível, deve ser:
+
+* Fácil de se alterar;
+* Pontual;
+* Não deve precisar que o desenvolvedor altere em diversos lugares causando uma mudança divergente.
+* Não deve ser necessário buscar muitos atributos de outras classes que poderiam não ter sido criadas para a plena criação da funcionalidade.
 
 ### Ausência de duplicidades
 
@@ -24,8 +76,6 @@ Evitar a duplicação de código é uma atividade que sempre deve estar presente
 
 * Caso seja notado trechos muito parecidos e que estão em diferentes partes do código, é recomendável que seja criada uma função de generalização do código. A partir da definição apropriada dos parâmetros, é possível condessar a lógica em apenas um trecho de código, além da responsabilidade única, agora a correção de erros também se concentra em apenas um local. Além do mais, a legibilidade do código é melhorada, já que agora é possível criar um nome significativo e que consiga descrever a etapa específica do código.
 * Um sinal de duplicação de código são classes excessivamente similares. Tal ocasião é um indicativo de que alguma funcionalidade deveria estar em uma classe pai, ou até mesmo que uma camada de interface seja necessária para descrever o comportamento em comum.
-
-### Portabilidade
 
 ### Idiomático
 
@@ -73,8 +123,6 @@ Além do documento "Zen do Python", a linguagem Python também possui um guia de
 * Poor Names e Nome de variáveis, funções e classes: A linguagem python define um padrão claro de nomenclatura para suas variáveis, funções e classes, deste modo quando uma função está nomeada como uma classe ou vice-versa, é um sinal de mau cheiro de código.
 
 * Inconsistency e Espaçamento, Identação e Codificação de caracteres: A linguagem pytho é clara quando define a quantidade de espaços que devem ser utilizados para identação, e a codificação de caracteres é sempre UTF-8. Deste modo, se em uma mesma base de código há trechos que são inconsistentes entre si quando analisamos na lente de espaçamento, identação e codificação de caracteres, é um sinal de mau cheiro de código.
-
-
 
 ### Boa documentação
 

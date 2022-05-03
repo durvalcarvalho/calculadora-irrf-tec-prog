@@ -72,7 +72,8 @@ class Deductions:
         self._other_deductions_value = ZERO
 
     def register_deduction(self, deduction: Tuple[str, Tuple]) -> None:
-        method = self.select_deduction_method(deduction[0])
+        deduction_type = deduction[0]
+        method = self.select_deduction_method(deduction_type)
         method(deduction[1])
 
     def select_deduction_method(self, deduction_type):
@@ -98,33 +99,36 @@ class Deductions:
 
     @property
     def all_deductions(self) -> float:
-        return (
+        total_deductions = (
             self._official_pension_total_value +
             self._dependent_deductions +
             self._food_pension +
             self._other_deductions_value
         )
 
+        return total_deductions
+
     def register_official_pension(self, deduction_tuple: Tuple[str, float]) -> None:
         description = deduction_tuple[0]
         value = deduction_tuple[1]
-        self._declared_deductions.append(
-            Deduction(
-                type="Previdencia oficial",
-                description=description,
-                value=value,
-            )
+
+        new_deduction = Deduction(
+            type="Previdencia oficial",
+            description=description,
+            value=value,
         )
-        self._official_pension_total_value += value
+
+        self._declared_deductions.append(new_deduction)
+        self._official_pension_total_value += new_deduction.value
     
     def register_dependent(self, name: str) -> None:
-        deduction = Deduction(
+        new_deduction = Deduction(
             type="Dependente",
             description="Dependente",
             value=Deductions.DEPENDENT_DEDUCTION,
             name=name,
         )
-        self._declared_deductions.append(deduction)
+        self._declared_deductions.append(new_deduction)
         self._dependent_deductions += Deductions.DEPENDENT_DEDUCTION
 
     def loop_over_dependents(self, names) -> None:
@@ -132,13 +136,13 @@ class Deductions:
             self.register_dependent(name)
 
     def register_food_pension(self, value: float) -> None:
-        deduction = Deduction(
+        new_deduction = Deduction(
             type="Pensão alimenticia",
             description="Pensao alimenticia",
             value=value
         )
-        self._declared_deductions.append(deduction)
-        self._food_pension += deduction.value
+        self._declared_deductions.append(new_deduction)
+        self._food_pension += new_deduction.value
 
     def loop_over_food_pensions(self, values) -> None:
         for value in values:
@@ -148,10 +152,10 @@ class Deductions:
         self,
         deduction_tuple: Tuple[str, float],
     ) -> None:
-        deduction = Deduction(
+        new_deduction = Deduction(
             type='Outras deducoes',
             description=deduction_tuple[0],
             value=deduction_tuple[1]
         )
-        self._declared_deductions.append(deduction)
-        self._other_deductions_value += deduction.value
+        self._declared_deductions.append(new_deduction)
+        self._other_deductions_value += new_deduction.value

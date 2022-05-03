@@ -27,11 +27,11 @@ class BaseRange:
         self.tax = tax
 
     def __eq__(self, other):
-        return(
-            round(self.min, 2) == round(other.min, 2) and
-            round(self.max, 2) == round(other.max, 2) and
-            round(self.tax, 2) == round(other.tax, 2)
-        )
+        is_min_equal = round(self.min, 2) == round(other.min, 2)
+        is_max_equal = round(self.max, 2) == round(other.max, 2)
+        is_tax_equal = round(self.tax, 2) == round(other.tax, 2)
+
+        return is_min_equal and is_max_equal and is_tax_equal
 
     def __lt__(self, other):
         return round(self.min, 2) < round(other.min, 2)
@@ -118,21 +118,15 @@ class Tax:
         if self._irrf.calculation_basis < Tax.TAX_EXEMPT_VALUE:
             self.tax = 0
 
-        elif self.is_within_range(
-            Tax.TAX_EXEMPT_VALUE,
-            Tax.FIRST_TAX_STEP):
+        elif self.is_within_range(Tax.TAX_EXEMPT_VALUE, Tax.FIRST_TAX_STEP):
             aliquot = Tax.FIRST_ALIQUOT
             exempt_value = Tax.EXEMPT_VALUE
 
-        elif self.is_within_range(
-            Tax.FIRST_TAX_STEP,
-            Tax.SECOND_TAX_STEP):
+        elif self.is_within_range(Tax.FIRST_TAX_STEP, Tax.SECOND_TAX_STEP):
             aliquot = Tax.SECOND_ALIQUOT
             exempt_value = Tax.FIRST_RANGE_EXEMPT_VALUE
 
-        elif self.is_within_range(
-            Tax.SECOND_TAX_STEP,
-            Tax.THIRD_TAX_STEP):
+        elif self.is_within_range(Tax.SECOND_TAX_STEP, Tax.THIRD_TAX_STEP):
             aliquot = Tax.THIRD_ALIQUOT
             exempt_value = Tax.SECOND_RANGE_EXEMPT_VALUE
 

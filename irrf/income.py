@@ -39,10 +39,10 @@ class Income:
         self.description = description
 
     def __eq__(self, other):
-        return (
-            self.value == other.value and
-            self.description == other.description
-        )
+        is_value_equal = self.value == other.value
+        is_description_equal = self.description == other.description
+
+        return is_value_equal and is_description_equal
 
     def __lt__(self, other):
         return self.value < other.value
@@ -59,11 +59,10 @@ class Incomes:
         self.total_income: float = ZERO
 
     def register_income(self, value: float, description: str) -> None:
-        self.total_income += value
+        new_income = Income(value=value, description=description)
 
-        self._declared_incomes.append(
-            Income(value=value, description=description),
-        )
+        self._declared_incomes.append(new_income)
+        self.total_income += new_income.value
     
     @property
     def declared_incomes(self) -> List[Income]:
