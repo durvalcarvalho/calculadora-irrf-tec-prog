@@ -1,5 +1,5 @@
 import unittest
-from irrf import Income
+from income import Income
 from exceptions import ValorRendimentoInvalidoException, DescricaoEmBrancoException
 
 from parameterized import parameterized
